@@ -1,0 +1,101 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Movimientos de caja - Cooperativa de Agua{% endblock %}
+
+{% block content %}
+
+<div class="contenedor">
+
+    <h1>Movimientos de caja</h1>
+
+    <div class="acciones">
+<a
+        href="{% url 'caja_principal' %}"
+        class="boton"
+    >
+        ← Volver a caja
+    </a>
+</div>
+
+    {% if movimientos %}
+
+        <div class="tabla-contenedor">
+<table>
+
+            <thead>
+
+                <tr>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Concepto</th>
+                    <th>Importe</th>
+                    <th>Usuario</th>
+                    <th>Observación</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for movimiento in movimientos %}
+
+                    <tr>
+
+                        <td>
+                            {{ movimiento.fecha_movimiento|date:"d/m/Y H:i" }}
+                        </td>
+
+                        <td>
+
+                            {% if movimiento.tipo == "INGRESO" %}
+
+                                <span class="ingreso">
+                                    INGRESO
+                                </span>
+
+                            {% else %}
+
+                                <span class="egreso">
+                                    EGRESO
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            {{ movimiento.concepto }}
+                        </td>
+
+                        <td>
+                            Bs {{ movimiento.importe }}
+                        </td>
+
+                        <td>
+                            {{ movimiento.id_usuario.nombre_completo }}
+                        </td>
+
+                        <td>
+                            {{ movimiento.observacion|default:"-" }}
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+</div>
+
+    {% else %}
+
+        <p>
+            No existen movimientos registrados.
+        </p>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

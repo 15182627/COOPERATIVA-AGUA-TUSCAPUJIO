@@ -1,0 +1,166 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+Periodos - Lecturas
+{% endblock %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <div class="pagina-header">
+
+        <div>
+            <h1>Periodos</h1>
+
+            <p class="subtitulo">
+                Administración de periodos de lectura
+            </p>
+        </div>
+
+        {% if usuario.id_rol_id == 1 %}
+
+            <a href="{% url 'nuevo_periodo' %}">
+              Nuevo periodo
+            </a>
+
+        {% endif %}
+
+    </div>
+
+
+    <div class="tabla-contenedor">
+
+        <table class="tabla-socios">
+
+            <thead>
+
+                <tr>
+                    <th>Periodo</th>
+                    <th>Inicio</th>
+                    <th>Fin</th>
+                    <th>Límite de pago</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for periodo in periodos %}
+
+                <tr>
+
+                    <td>
+                        {{ periodo.mes }}/{{ periodo.gestion }}
+                    </td>
+
+                    <td>
+                        {{ periodo.fecha_inicio }}
+                    </td>
+
+                    <td>
+                        {{ periodo.fecha_fin }}
+                    </td>
+
+                    <td>
+                        {{ periodo.fecha_limite_pago|default:"-" }}
+                    </td>
+
+                    <td>
+
+                        {% if periodo.estado == "ABIERTO" %}
+
+                            <span class="estado activo">
+                                ABIERTO
+                            </span>
+
+                        {% else %}
+
+                            <span class="estado">
+                                {{ periodo.estado }}
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+
+                        <a
+                            href="{% url 'planilla_lecturas' periodo.id_periodo %}"
+                            class="btn-accion"
+                        >
+                            Ver planilla
+                        </a>
+
+
+                        <a
+                            href="{% url 'generar_planilla' periodo.id_periodo %}"
+                            class="btn-accion"
+                        >
+                            Generar
+                        </a>
+
+
+                        <form
+                            method="POST"
+                            action="{% url 'cambiar_estado_periodo' periodo.id_periodo %}"
+                            style="display:inline;"
+                        >
+
+                            {% csrf_token %}
+
+                            {% if periodo.estado == "ABIERTO" %}
+
+                                <button
+                                    type="submit"
+                                    class="btn-accion"
+                                >
+                                    Cerrar
+                                </button>
+
+                            {% else %}
+
+                                <button
+                                    type="submit"
+                                    class="btn-accion"
+                                >
+                                    Abrir
+                                </button>
+
+                            {% endif %}
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td
+                        colspan="6"
+                        class="sin-datos"
+                    >
+                        No existen periodos registrados.
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

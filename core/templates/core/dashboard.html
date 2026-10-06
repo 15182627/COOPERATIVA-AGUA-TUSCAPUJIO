@@ -1,0 +1,83 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+Inicio - Cooperativa de Agua
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard">
+
+    <h1>Inicio</h1>
+
+    <p class="subtitulo">
+        Panel principal de la Cooperativa de Agua
+    </p>
+
+
+    <div class="cards">
+
+        <div class="card">
+            <div class="card-icon">
+                👥
+            </div>
+
+            <div>
+                <h3>Socios</h3>
+                <p>{{ cantidad_socios }} registrados</p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-icon">
+                📖
+            </div>
+
+            <div>
+                <h3>Lecturas</h3>
+                <p>Periodo actual</p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-icon">
+                💰
+            </div>
+
+            <div>
+                <h3>Deudas</h3>
+                <p>Consultar deudas</p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-icon">
+                💵
+            </div>
+
+            <div>
+                <h3>Caja</h3>
+                <p>Movimientos</p>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="panel">
+
+        <h2>Resumen</h2>
+
+        <p>
+            Bienvenido al sistema de administración
+            de la Cooperativa de Agua.
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}

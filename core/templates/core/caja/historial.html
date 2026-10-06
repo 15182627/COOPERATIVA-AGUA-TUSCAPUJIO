@@ -1,0 +1,126 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Historial de Cajas - Cooperativa de Agua{% endblock %}
+
+{% block content %}
+
+<div class="contenedor">
+
+    <h1>Historial de Cajas</h1>
+
+    <div class="acciones">
+
+        <a href="{% url 'caja_principal' %}" class="btn">
+            Caja actual
+        </a>
+
+        <a href="{% url 'abrir_caja' %}" class="btn">
+            Abrir caja
+        </a>
+
+    </div>
+
+    {% if cajas %}
+
+    <div class="tabla-contenedor">
+<table>
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha apertura</th>
+                <th>Fecha cierre</th>
+                <th>Saldo inicial</th>
+                <th>Saldo final</th>
+                <th>Estado</th>
+                <th>Usuario apertura</th>
+                <th>Usuario cierre</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for caja in cajas %}
+
+            <tr>
+
+                <td>
+                    {{ caja.id_caja }}
+                </td>
+
+                <td>
+                    {{ caja.fecha_apertura }}
+                </td>
+
+                <td>
+                    {% if caja.fecha_cierre %}
+                        {{ caja.fecha_cierre }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+
+                <td>
+                    Bs {{ caja.saldo_inicial }}
+                </td>
+
+                <td>
+                    {% if caja.saldo_final %}
+                        Bs {{ caja.saldo_final }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+
+                <td>
+
+                    {% if caja.estado == "ABIERTA" %}
+
+                        <span class="abierta">
+                            ABIERTA
+                        </span>
+
+                    {% else %}
+
+                        <span class="cerrada">
+                            CERRADA
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+                    {{ caja.id_usuario_apertura.nombre_completo }}
+                </td>
+
+                <td>
+
+                    {% if caja.id_usuario_cierre %}
+                        {{ caja.id_usuario_cierre.nombre_completo }}
+                    {% else %}
+                        —
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+</div>
+
+    {% else %}
+
+        <div class="vacio">
+            No existen cajas registradas.
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

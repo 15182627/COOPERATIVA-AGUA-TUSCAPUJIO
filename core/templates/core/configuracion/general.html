@@ -1,0 +1,82 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <h1>Configuración general</h1>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <label>Nombre de cooperativa</label>
+
+        <input
+            type="text"
+            name="nombre_cooperativa"
+            value="{{ configuracion.nombre_cooperativa|default:'' }}"
+            required
+        >
+
+        <br><br>
+
+        <label>Dirección</label>
+
+        <input
+            type="text"
+            name="direccion"
+            value="{{ configuracion.direccion|default:'' }}"
+        >
+
+        <br><br>
+
+        <label>Teléfono</label>
+
+        <input
+            type="text"
+            name="telefono"
+            value="{{ configuracion.telefono|default:'' }}"
+        >
+
+        <br><br>
+
+        <label>Correo</label>
+
+        <input
+            type="email"
+            name="correo"
+            value="{{ configuracion.correo|default:'' }}"
+        >
+
+        <br><br>
+
+        <label>NIT</label>
+
+        <input
+            type="text"
+            name="nit"
+            value="{{ configuracion.nit|default:'' }}"
+        >
+
+        <br><br>
+
+        <label>Logo</label>
+
+        <input
+            type="text"
+            name="logo"
+            value="{{ configuracion.logo|default:'' }}"
+        >
+
+        <br><br>
+
+        <button type="submit" class="boton">
+            Guardar
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

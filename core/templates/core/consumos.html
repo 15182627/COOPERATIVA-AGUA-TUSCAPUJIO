@@ -1,0 +1,204 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+Consumo
+{% endblock %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <div class="pagina-header">
+
+        <div>
+
+            <h1>
+                Consumo
+            </h1>
+
+            <p class="subtitulo">
+                Consulta de consumos registrados por periodo
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- FILTRO -->
+
+    <div class="filtros">
+
+        <form method="get">
+
+            <div class="campo">
+
+                <label for="periodo">
+                    Periodo
+                </label>
+
+                <select name="periodo" id="periodo">
+
+                    <option value="">
+                        Todos los periodos
+                    </option>
+
+                    {% for periodo in periodos %}
+
+                        <option
+                            value="{{ periodo.id_periodo }}"
+                            {% if periodo_seleccionado|stringformat:"s" == periodo.id_periodo|stringformat:"s" %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ periodo.mes }}/{{ periodo.gestion }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn-principal"
+            >
+                Filtrar
+            </button>
+
+
+            <a
+                href="{% url 'lista_consumos' %}"
+                class="btn-accion"
+            >
+                Limpiar
+            </a>
+
+        </form>
+
+    </div>
+
+
+    <!-- TABLA -->
+
+    <div class="tabla-contenedor">
+
+        <table class="tabla-socios">
+
+            <thead>
+
+                <tr>
+
+                    <th>Periodo</th>
+
+                    <th>N.º Socio</th>
+
+                    <th>Socio</th>
+
+                    <th>Medidor</th>
+
+                    <th>Lectura anterior</th>
+
+                    <th>Lectura actual</th>
+
+                    <th>Consumo m³</th>
+
+                    <th>Importe</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for consumo in consumos %}
+
+                <tr>
+
+                    <td>
+
+                        {{ consumo.id_lectura.id_periodo.mes }}/{{ consumo.id_lectura.id_periodo.gestion }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{ consumo.id_lectura.id_medidor.id_socio.numero_socio }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{ consumo.id_lectura.id_medidor.id_socio.nombres }}
+
+                        {{ consumo.id_lectura.id_medidor.id_socio.apellidos }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{ consumo.id_lectura.id_medidor.numero_medidor }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{ consumo.id_lectura.lectura_anterior }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{ consumo.id_lectura.lectura_actual }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{ consumo.metros_cubicos }}
+
+                    </td>
+
+
+                    <td>
+
+                        Bs {{ consumo.importe }}
+
+                    </td>
+
+                </tr>
+
+
+                {% empty %}
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        class="sin-datos"
+                    >
+                        No existen consumos registrados.
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

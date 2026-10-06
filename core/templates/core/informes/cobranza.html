@@ -1,0 +1,100 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <h1>Informe de cobranza</h1>
+
+    <form method="get">
+
+        <select name="periodo">
+
+            <option value="">
+                Todos los periodos
+            </option>
+
+            {% for periodo in periodos %}
+
+            <option
+                value="{{ periodo.id_periodo }}"
+                {% if periodo_id|stringformat:"s" == periodo.id_periodo|stringformat:"s" %}
+                    selected
+                {% endif %}
+            >
+
+                {{ periodo.mes }}/{{ periodo.gestion }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+        <button type="submit">
+            Filtrar
+        </button>
+
+        <a href="{% url 'exportar_cobranza_csv' %}">
+            Exportar CSV
+        </a>
+
+    </form>
+
+    <br>
+
+    <p>Total deuda: {{ total_deuda }}</p>
+
+    <p>Total pagado: {{ total_pagado }}</p>
+
+    <p>Total saldo: {{ total_saldo }}</p>
+
+    <table class="tabla-socios">
+
+        <thead>
+
+            <tr>
+                <th>Socio</th>
+                <th>Periodo</th>
+                <th>Total</th>
+                <th>Pagado</th>
+                <th>Saldo</th>
+                <th>Estado</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for deuda in deudas %}
+
+        <tr>
+
+            <td>
+                {{ deuda.id_socio.numero_socio }}
+            </td>
+
+            <td>
+                {{ deuda.id_periodo.mes }}/
+                {{ deuda.id_periodo.gestion }}
+            </td>
+
+            <td>{{ deuda.total }}</td>
+
+            <td>{{ deuda.total_pagado }}</td>
+
+            <td>{{ deuda.saldo }}</td>
+
+            <td>{{ deuda.estado }}</td>
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

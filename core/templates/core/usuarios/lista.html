@@ -1,0 +1,103 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Usuarios - Cooperativa de Agua{% endblock %}
+
+{% block content %}
+
+<div class="contenedor">
+
+    <h1>Usuarios del sistema</h1>
+
+    <div class="acciones">
+<a href="{% url 'inicio' %}" class="btn">
+        Volver al inicio
+    </a>
+</div>
+
+    <div class="tabla-contenedor">
+<table>
+
+        <thead>
+
+            <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Nombre</th>
+                <th>Rol</th>
+                <th>Correo</th>
+                <th>Estado</th>
+                <th>Fecha creación</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for usuario in usuarios %}
+
+            <tr>
+
+                <td>
+                    {{ usuario.id_usuario }}
+                </td>
+
+                <td>
+                    {{ usuario.nombre_usuario }}
+                </td>
+
+                <td>
+                    {{ usuario.nombre_completo }}
+                </td>
+
+                <td>
+                    {{ usuario.id_rol_id }}
+                </td>
+
+                <td>
+                    {{ usuario.correo }}
+                </td>
+
+                <td>
+
+                    {% if usuario.estado == "ACTIVO" %}
+
+                        <span class="activo">
+                            ACTIVO
+                        </span>
+
+                    {% else %}
+
+                        <span class="inactivo">
+                            {{ usuario.estado }}
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+                    {{ usuario.fecha_creacion }}
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="7">
+                    No existen usuarios registrados.
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+</div>
+
+</div>
+
+{% endblock %}

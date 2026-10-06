@@ -1,0 +1,303 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+Planilla de lecturas
+{% endblock %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <div class="pagina-header">
+
+        <div>
+
+            <h1>
+                Planilla de lecturas
+            </h1>
+
+            <p class="subtitulo">
+
+                Periodo:
+                <strong>
+                    {{ periodo.mes }}/{{ periodo.gestion }}
+                </strong>
+
+            </p>
+
+        </div>
+
+
+        <div>
+
+            {% if periodo.estado == "EN_LECTURA" %}
+
+                <span class="estado activo">
+                    EN LECTURA
+                </span>
+
+            {% elif periodo.estado == "HABILITADO" %}
+
+                <span class="estado activo">
+                    HABILITADO
+                </span>
+
+            {% elif periodo.estado == "LECTURA_CERRADA" %}
+
+                <span class="estado">
+                    LECTURA CERRADA
+                </span>
+
+            {% elif periodo.estado == "EN_COBRANZA" %}
+
+                <span class="estado">
+                    EN COBRANZA
+                </span>
+
+            {% elif periodo.estado == "CERRADO" %}
+
+                <span class="estado">
+                    CERRADO
+                </span>
+
+            {% else %}
+
+                <span class="estado">
+                    {{ periodo.estado }}
+                </span>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <div class="navegacion-periodos">
+
+        {% if periodo_anterior %}
+
+            <a
+                href="{% url 'planilla_lecturas' periodo_anterior.id_periodo %}"
+                class="btn-accion"
+            >
+                ←
+                {{ periodo_anterior.mes }}/{{ periodo_anterior.gestion }}
+            </a>
+
+        {% endif %}
+
+
+        <span class="periodo-actual">
+
+            {{ periodo.mes }}/{{ periodo.gestion }}
+
+        </span>
+
+
+        {% if periodo_siguiente %}
+
+            <a
+                href="{% url 'planilla_lecturas' periodo_siguiente.id_periodo %}"
+                class="btn-accion"
+            >
+                {{ periodo_siguiente.mes }}/{{ periodo_siguiente.gestion }}
+                →
+            </a>
+
+        {% endif %}
+
+    </div>
+
+
+    <div class="acciones-planilla">
+
+        {% if usuario.id_rol_id == 1 or usuario.id_rol_id == 3 %}
+
+            <a href="{% url 'generar_planilla' periodo.id_periodo %}">
+                Generar planilla
+            </a>
+
+        {% endif %}
+
+
+        <a
+            href="{% url 'lista_periodos' %}"
+            class="btn-accion"
+        >
+            Ver periodos
+        </a>
+
+    </div>
+
+
+    <div class="tabla-contenedor">
+
+        <table class="tabla-socios">
+
+            <thead>
+
+                <tr>
+
+                    <th>N.º Socio</th>
+
+                    <th>Socio</th>
+
+                    <th>Medidor</th>
+
+                    <th>Lectura anterior</th>
+
+                    <th>Lectura actual</th>
+
+                    <th>Consumo</th>
+
+                    <th>Estado</th>
+
+                    <th>Acciones</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for lectura in lecturas %}
+
+                <tr>
+
+                    <td>
+                        {{ lectura.id_medidor.id_socio.numero_socio }}
+                    </td>
+
+
+                    <td>
+
+                        {{ lectura.id_medidor.id_socio.nombres }}
+
+                        {{ lectura.id_medidor.id_socio.apellidos }}
+
+                    </td>
+
+
+                    <td>
+                        {{ lectura.id_medidor.numero_medidor }}
+                    </td>
+
+
+                    <td>
+                        {{ lectura.lectura_anterior }}
+                    </td>
+
+
+                    <td>
+
+                        {% if lectura.lectura_actual is not None %}
+
+                            {{ lectura.lectura_actual }}
+
+                        {% else %}
+
+                            -
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+
+                        {% if lectura.consumo_calculado is not None %}
+
+                            {{ lectura.consumo_calculado }}
+
+                        {% else %}
+
+                            -
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+
+                        {% if lectura.estado == "REGISTRADA" %}
+
+                            <span class="estado activo">
+                                REGISTRADA
+                            </span>
+
+                        {% else %}
+
+                            <span class="estado">
+                                {{ lectura.estado }}
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+
+                        {% if periodo.estado == "EN_LECTURA" %}
+
+                            {% if lectura.lectura_actual is not None %}
+
+                                <a
+                                    href="{% url 'editar_lectura' lectura.id_lectura %}"
+                                    class="btn-accion"
+                                >
+                                    Editar
+                                </a>
+
+                            {% else %}
+
+                                <a
+                                    href="{% url 'registrar_lectura' lectura.id_lectura %}"
+                                    class="btn-accion"
+                                >
+                                    Registrar
+                                </a>
+
+                            {% endif %}
+
+                        {% else %}
+
+                            <span>
+                                Bloqueado
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+
+                {% empty %}
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        class="sin-datos"
+                    >
+                        No existen lecturas para este periodo.
+                        Genera la planilla primero.
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Abrir caja - Cooperativa de Agua{% endblock %}
+
+{% block content %}
+
+<div class="contenedor">
+
+    <h1>Abrir caja</h1>
+
+    {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <div class="formulario-contenedor">
+<form method="POST" class="form-simple">
+
+        {% csrf_token %}
+
+        <label>
+            Saldo inicial
+        </label>
+
+        <input
+            type="number"
+            name="saldo_inicial"
+            step="0.01"
+            min="0"
+            required
+        >
+
+        <label>
+            Usuario que abre la caja
+        </label>
+
+        <select name="id_usuario" required>
+
+            <option value="">
+                Seleccione un usuario
+            </option>
+
+            {% for usuario in usuarios %}
+
+                <option value="{{ usuario.id_usuario }}">
+                    {{ usuario.nombre_completo }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <div class="formulario-acciones">
+<a href="{% url 'caja_principal' %}" class="btn">
+            Cancelar
+        </a>
+<button type="submit" class="btn-principal">
+            Abrir caja
+        </button>
+</div>
+
+    </form>
+</div>
+
+</div>
+
+{% endblock %}

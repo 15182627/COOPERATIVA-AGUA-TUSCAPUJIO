@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.sqlite3
+.env
+.env.*
+!.env.example
+venv/
+.venv/
+.idea/
+.vscode/
+
+# Local PostgreSQL backups can contain personal information and password hashes.
+/cooperqativasql.v2.sql
+*.dump
+*.backup

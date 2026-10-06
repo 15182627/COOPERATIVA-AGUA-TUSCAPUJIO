@@ -1,0 +1,34 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <h1>Configuración</h1>
+
+    <p>
+        <a href="{% url 'configuracion_general' %}">
+            Configuración general
+        </a>
+    </p>
+
+    <p>
+        <a href="{% url 'configuracion_cobranza' %}">
+            Configuración de cobranza
+        </a>
+    </p>
+
+    <p>
+        <a href="{% url 'lista_tarifas' %}">
+            Tarifas
+        </a>
+    </p>
+
+    <p>
+        Tarifas registradas:
+        <strong>{{ total_tarifas }}</strong>
+    </p>
+
+</div>
+
+{% endblock %}

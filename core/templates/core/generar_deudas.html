@@ -1,0 +1,76 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+Generar deudas
+{% endblock %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <div class="pagina-header">
+
+        <div>
+
+            <h1>
+                Generar deudas
+            </h1>
+
+            <p class="subtitulo">
+                Periodo:
+                <strong>
+                    {{ periodo.mes }}/{{ periodo.gestion }}
+                </strong>
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="tarjeta">
+
+        <h2>
+            Confirmar generación
+        </h2>
+
+        <p>
+            Se generarán las deudas de los socios que
+            tengan consumos registrados en este periodo.
+        </p>
+
+        <p>
+            Las deudas serán creadas inicialmente como
+            <strong>PENDIENTES</strong>.
+        </p>
+
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div class="acciones-planilla">
+
+                <button
+                    type="submit"
+                    class="btn-principal"
+                >
+                    Generar deudas
+                </button>
+
+                <a
+                    href="{% url 'lista_deudas' %}?periodo={{ periodo.id_periodo }}"
+                    class="btn-accion"
+                >
+                    Cancelar
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

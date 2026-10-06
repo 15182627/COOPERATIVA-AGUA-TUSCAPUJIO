@@ -1,0 +1,57 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <h1>Configuración de cobranza</h1>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <label>Día límite de pago</label>
+
+        <input
+            type="number"
+            name="dia_limite_pago"
+            min="1"
+            max="31"
+            value="{{ configuracion.dia_limite_pago|default:10 }}"
+            required
+        >
+
+        <br><br>
+
+        <label>Recargo por mora</label>
+
+        <input
+            type="number"
+            step="0.01"
+            name="recargo_mora"
+            value="{{ configuracion.recargo_mora|default:0 }}"
+            required
+        >
+
+        <br><br>
+
+        <label>Moneda</label>
+
+        <input
+            type="text"
+            name="moneda"
+            value="{{ configuracion.moneda|default:'BOB' }}"
+            required
+        >
+
+        <br><br>
+
+        <button type="submit" class="boton">
+            Guardar
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

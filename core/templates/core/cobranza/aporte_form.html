@@ -1,0 +1,87 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <h1>Registrar aporte</h1>
+
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <label>Socio</label>
+
+        <select name="id_socio" required>
+
+            <option value="">Seleccione...</option>
+
+            {% for socio in socios %}
+
+            <option value="{{ socio.id_socio }}">
+
+                {{ socio.numero_socio }} -
+                {{ socio.nombre }}
+                {{ socio.apellido_paterno }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+        <br><br>
+
+        <label>Periodo</label>
+
+        <select name="id_periodo" required>
+
+            <option value="">Seleccione...</option>
+
+            {% for periodo in periodos %}
+
+            <option value="{{ periodo.id_periodo }}">
+                {{ periodo.mes }}/{{ periodo.gestion }}
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+        <br><br>
+
+        <label>Importe</label>
+
+        <input
+            type="number"
+            name="importe"
+            step="0.01"
+            min="0.01"
+            required
+        >
+
+        <br><br>
+
+        <label>Descripción</label>
+
+        <input
+            type="text"
+            name="descripcion"
+            value="Aporte de socio"
+        >
+
+        <br><br>
+
+        <button type="submit" class="boton">
+            Registrar aporte
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

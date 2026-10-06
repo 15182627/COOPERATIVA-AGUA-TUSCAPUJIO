@@ -1,0 +1,158 @@
+{% load static %}<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <title>{% block title %}Cooperativa de Agua{% endblock %}</title>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💧</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+</head>
+
+<body>
+
+{# El usuario llega como "usuario" en algunas vistas y como request.usuario_actual en todas las protegidas #}
+{% with u=usuario|default:request.usuario_actual %}
+{% with rol=u.id_rol_id %}
+
+<div class="layout">
+
+    <!-- ===================================================== -->
+    <!-- BARRA LATERAL -->
+    <!-- ===================================================== -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sidebar-marca">
+            <div class="icono">💧</div>
+            <div>
+                <strong>Cooperativa de Agua</strong>
+                <small>Sistema de gestión</small>
+            </div>
+        </div>
+
+        <nav class="menu">
+
+            <a href="{% url 'inicio' %}" class="menu-item">
+                <span class="emoji">🏠</span><span>Inicio</span>
+            </a>
+
+            {% if rol == 1 or rol == 2 %}
+            <a href="{% url 'lista_socios' %}" class="menu-item">
+                <span class="emoji">👥</span><span>Socios</span>
+            </a>
+            {% endif %}
+
+            {% if rol == 1 %}
+            <a href="{% url 'lista_acciones' %}" class="menu-item">
+                <span class="emoji">🔑</span><span>Acción</span>
+            </a>
+            {% endif %}
+
+            {% if rol == 1 or rol == 3 %}
+            <a href="{% url 'lista_periodos' %}" class="menu-item">
+                <span class="emoji">📖</span><span>Lecturas</span>
+            </a>
+
+            <a href="{% url 'lista_asistencias' %}" class="menu-item">
+                <span class="emoji">📝</span><span>Asistencia</span>
+            </a>
+            {% endif %}
+
+            {% if rol == 1 or rol == 2 %}
+            <div class="menu-section">
+                <div class="menu-title">
+                    <span class="emoji">💰</span><span>Cobranza</span>
+                </div>
+                <div class="submenu">
+                    <a href="{% url 'lista_consumos' %}" class="submenu-item">Consumo</a>
+                    <a href="{% url 'lista_aportes' %}" class="submenu-item">Cobrar aporte</a>
+                    <a href="{% url 'lista_otros_cobros' %}" class="submenu-item">Otros cobros</a>
+                    <a href="{% url 'lista_cobranza' %}" class="submenu-item">Consultar deudas</a>
+                </div>
+            </div>
+
+            <a href="{% url 'caja_principal' %}" class="menu-item">
+                <span class="emoji">💵</span><span>Caja</span>
+            </a>
+            {% endif %}
+
+            {% if rol == 1 %}
+            <a href="{% url 'informes' %}" class="menu-item">
+                <span class="emoji">📊</span><span>Informes</span>
+            </a>
+
+            <a href="{% url 'configuracion' %}" class="menu-item">
+                <span class="emoji">⚙️</span><span>Configuración</span>
+            </a>
+
+            <a href="{% url 'utilidades' %}" class="menu-item">
+                <span class="emoji">🛠️</span><span>Utilidades</span>
+            </a>
+
+            <a href="{% url 'lista_usuarios' %}" class="menu-item">
+                <span class="emoji">👤</span><span>Usuarios</span>
+            </a>
+            {% endif %}
+
+            <div class="menu-separator"></div>
+
+            <a href="{% url 'logout' %}" class="menu-item salir">
+                <span class="emoji">🚪</span><span>Salir</span>
+            </a>
+
+        </nav>
+
+        <div class="sidebar-pie">
+            <div class="sidebar-usuario">
+                <div class="avatar">{{ u.nombre_completo|first|upper }}</div>
+                <div class="info">
+                    <strong>{{ u.nombre_completo }}</strong>
+                    <small>{% if rol == 1 %}Administrador{% elif rol == 2 %}Cajero{% elif rol == 3 %}Lector{% endif %}</small>
+                </div>
+            </div>
+        </div>
+
+    </aside>
+
+
+    <!-- ===================================================== -->
+    <!-- CONTENIDO -->
+    <!-- ===================================================== -->
+
+    <div class="contenido">
+
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menú" aria-controls="sidebar">☰</button>
+                <h2 id="tituloPagina">Cooperativa de Agua</h2>
+            </div>
+
+            <div class="usuario">
+                {% if u %}Sesión de <strong>{{ u.nombre_completo }}</strong>{% endif %}
+            </div>
+        </header>
+
+        <main class="content">
+            {% block content %}
+            {% endblock %}
+        </main>
+
+        <div class="overlay-menu" id="overlayMenu"></div>
+
+    </div>
+
+</div>
+
+{% endwith %}
+{% endwith %}
+
+<script src="{% static 'js/app.js' %}"></script>
+
+</body>
+
+</html>

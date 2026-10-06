@@ -1,0 +1,85 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <div class="cabecera-pagina">
+
+        <h1>Otros cobros</h1>
+
+        <a
+            href="{% url 'registrar_otro_cobro' %}"
+            class="boton"
+        >
+            + Nuevo cobro
+        </a>
+
+    </div>
+
+    <table class="tabla-socios">
+
+        <thead>
+
+            <tr>
+                <th>Socio</th>
+                <th>Periodo</th>
+                <th>Descripción</th>
+                <th>Importe</th>
+                <th>Deuda</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for detalle in detalles %}
+
+        <tr>
+
+            <td>
+                {{ detalle.id_deuda.id_socio.numero_socio }}
+                -
+                {{ detalle.id_deuda.id_socio.nombre }}
+            </td>
+
+            <td>
+                {{ detalle.id_deuda.id_periodo.mes }}/
+                {{ detalle.id_deuda.id_periodo.gestion }}
+            </td>
+
+            <td>
+                {{ detalle.descripcion }}
+            </td>
+
+            <td>
+                {{ detalle.importe }}
+            </td>
+
+            <td>
+
+                <a href="{% url 'detalle_cobranza' detalle.id_deuda.id_deuda %}">
+                    Ver deuda
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% empty %}
+
+        <tr>
+            <td colspan="5">
+                No existen otros cobros registrados.
+            </td>
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

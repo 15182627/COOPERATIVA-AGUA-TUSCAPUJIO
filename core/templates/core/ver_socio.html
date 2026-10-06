@@ -1,0 +1,131 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+Ver socio - Cooperativa de Agua
+{% endblock %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <div class="pagina-header">
+
+        <div>
+
+            <h1>
+                {{ socio.nombres }} {{ socio.apellidos }}
+            </h1>
+
+            <p class="subtitulo">
+                Información del socio
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <a
+                href="{% url 'editar_socio' socio.id_socio %}"
+                class="btn-principal"
+            >
+                Editar
+            </a>
+
+            <a
+                href="{% url 'lista_socios' %}"
+                class="btn-accion"
+            >
+                Volver
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="detalle-socio">
+
+        <div class="detalle-item">
+            <strong>N.º Socio</strong>
+            <span>{{ socio.numero_socio }}</span>
+        </div>
+
+
+        <div class="detalle-item">
+            <strong>CI</strong>
+            <span>{{ socio.ci|default:"-" }}</span>
+        </div>
+
+
+        <div class="detalle-item">
+            <strong>Nombres</strong>
+            <span>{{ socio.nombres }}</span>
+        </div>
+
+
+        <div class="detalle-item">
+            <strong>Apellidos</strong>
+            <span>{{ socio.apellidos }}</span>
+        </div>
+
+
+        <div class="detalle-item">
+            <strong>Dirección</strong>
+            <span>{{ socio.direccion|default:"-" }}</span>
+        </div>
+
+
+        <div class="detalle-item">
+            <strong>Teléfono</strong>
+            <span>{{ socio.telefono|default:"-" }}</span>
+        </div>
+
+
+        <div class="detalle-item">
+            <strong>Correo</strong>
+            <span>{{ socio.correo|default:"-" }}</span>
+        </div>
+
+
+        <div class="detalle-item">
+            <strong>Fecha de afiliación</strong>
+            <span>{{ socio.fecha_afiliacion|default:"-" }}</span>
+        </div>
+
+
+        <div class="detalle-item">
+            <strong>Estado</strong>
+
+            {% if socio.estado == "ACTIVO" %}
+
+                <span class="estado activo">
+                    ACTIVO
+                </span>
+
+            {% else %}
+
+                <span class="estado">
+                    {{ socio.estado }}
+                </span>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="detalle-item detalle-completo">
+
+            <strong>Observación</strong>
+
+            <span>
+                {{ socio.observacion|default:"-" }}
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

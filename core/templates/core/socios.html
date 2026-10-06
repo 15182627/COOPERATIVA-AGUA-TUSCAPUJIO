@@ -1,0 +1,183 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+Socios - Cooperativa de Agua
+{% endblock %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <div class="pagina-header">
+        <div>
+            <h1>Socios</h1>
+
+            <p class="subtitulo">
+                Registro de socios de la Cooperativa de Agua
+            </p>
+        </div>
+
+        {% if usuario.id_rol_id == 1 or usuario.id_rol_id == 2 %}
+
+        <a href="{% url 'nuevo_socio' %}">
+          Nuevo socio
+        </a>
+
+        {% endif %}
+    </div>
+
+
+    <form method="GET" class="filtros">
+
+        <input
+            type="text"
+            name="buscar"
+            value="{{ buscar }}"
+            placeholder="Buscar por número, CI, nombre o apellido..."
+        >
+
+        <button type="submit" class="btn-principal">
+            Buscar
+        </button>
+
+        {% if buscar %}
+            <a href="{% url 'lista_socios' %}" class="btn-accion">
+                Limpiar
+            </a>
+        {% endif %}
+
+    </form>
+
+
+    <div class="tabla-contenedor">
+
+        <table class="tabla-socios">
+
+            <thead>
+                <tr>
+                    <th>N.º Socio</th>
+                    <th>CI</th>
+                    <th>Nombre completo</th>
+                    <th>Teléfono</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+
+            <tbody>
+
+                {% for socio in socios %}
+
+                <tr>
+
+                    <td>
+                        {{ socio.numero_socio }}
+                    </td>
+
+                    <td>
+                        {{ socio.ci|default:"-" }}
+                    </td>
+
+                    <td>
+                        {{ socio.nombres }}
+                        {{ socio.apellidos }}
+                    </td>
+
+                    <td>
+                        {{ socio.telefono|default:"-" }}
+                    </td>
+
+                    <td>
+
+                        {% if socio.estado == "ACTIVO" %}
+
+                            <span class="estado activo">
+                                Activo
+                            </span>
+
+                        {% else %}
+
+                            <span class="estado">
+                                {{ socio.estado }}
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+
+                        <a
+                            href="{% url 'ver_socio' socio.id_socio %}"
+                            class="btn-accion"
+                        >
+                            Ver
+                        </a>
+
+                        <a
+                            href="{% url 'editar_socio' socio.id_socio %}"
+                            class="btn-accion"
+                        >
+                            Editar
+                        </a>
+
+                        <form
+                            method="POST"
+                            action="{% url 'cambiar_estado_socio' socio.id_socio %}"
+                            style="display:inline;"
+                        >
+
+                            {% csrf_token %}
+
+                            {% if socio.estado == "ACTIVO" %}
+
+                                <button
+                                    type="submit"
+                                    class="btn-accion"
+                                >
+                                    Desactivar
+                                </button>
+
+                            {% else %}
+
+                                <button
+                                    type="submit"
+                                    class="btn-accion"
+                                >
+                                    Activar
+                                </button>
+
+                            {% endif %}
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td
+                        colspan="6"
+                        class="sin-datos"
+                    >
+                        No existen socios registrados.
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

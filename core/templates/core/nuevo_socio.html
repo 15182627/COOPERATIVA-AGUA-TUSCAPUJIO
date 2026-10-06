@@ -1,0 +1,209 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+Nuevo socio - Cooperativa de Agua
+{% endblock %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <div class="pagina-header">
+
+        <div>
+            <h1>Nuevo socio</h1>
+
+            <p class="subtitulo">
+                Registrar un nuevo socio
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="formulario-contenedor">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <div class="form-grid">
+
+                <div class="campo">
+
+                    <label>
+                        Número de socio *
+                    </label>
+
+                    <input
+                        type="text"
+                        name="numero_socio"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        CI
+                    </label>
+
+                    <input
+                        type="text"
+                        name="ci"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Nombres *
+                    </label>
+
+                    <input
+                        type="text"
+                        name="nombres"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Apellidos *
+                    </label>
+
+                    <input
+                        type="text"
+                        name="apellidos"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo campo-completo">
+
+                    <label>
+                        Dirección
+                    </label>
+
+                    <input
+                        type="text"
+                        name="direccion"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Teléfono
+                    </label>
+
+                    <input
+                        type="text"
+                        name="telefono"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Correo electrónico
+                    </label>
+
+                    <input
+                        type="email"
+                        name="correo"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Fecha de afiliación
+                    </label>
+
+                    <input
+                        type="date"
+                        name="fecha_afiliacion"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Estado
+                    </label>
+
+                    <select name="estado">
+
+                        <option value="ACTIVO">
+                            ACTIVO
+                        </option>
+
+                        <option value="INACTIVO">
+                            INACTIVO
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="campo campo-completo">
+
+                    <label>
+                        Observación
+                    </label>
+
+                    <textarea
+                        name="observacion"
+                        rows="4"
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+
+            <div class="formulario-acciones">
+
+                <a
+                    href="{% url 'lista_socios' %}"
+                    class="btn-accion"
+                >
+                    Cancelar
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn-principal"
+                >
+                    Guardar socio
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

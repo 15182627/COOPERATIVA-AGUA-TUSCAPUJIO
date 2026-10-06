@@ -1,0 +1,113 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <h1>
+        {% if accion %}
+            Editar acción
+        {% else %}
+            Nueva acción
+        {% endif %}
+    </h1>
+
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <label>Socio</label>
+
+        <select name="id_socio" required>
+
+            <option value="">Seleccione...</option>
+
+            {% for socio in socios %}
+
+            <option
+                value="{{ socio.id_socio }}"
+                {% if accion and accion.id_socio.id_socio == socio.id_socio %}
+                    selected
+                {% endif %}
+            >
+
+                {{ socio.numero_socio }} -
+                {{ socio.nombre }}
+                {{ socio.apellido_paterno }}
+                {{ socio.apellido_materno }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+        <br><br>
+
+        <label>Código de acción</label>
+
+        <input
+            type="text"
+            name="codigo_accion"
+            value="{{ accion.codigo_accion|default:'' }}"
+        >
+
+        <br><br>
+
+        <label>Fecha</label>
+
+        <input
+            type="date"
+            name="fecha_registro"
+            value="{% if accion %}{{ accion.fecha_registro|date:'Y-m-d' }}{% endif %}"
+        >
+
+        <br><br>
+
+        <label>Estado</label>
+
+        <select name="estado">
+
+            <option value="ACTIVO"
+                {% if not accion or accion.estado == "ACTIVO" %}
+                    selected
+                {% endif %}
+            >
+                ACTIVO
+            </option>
+
+            <option value="INACTIVO"
+                {% if accion and accion.estado == "INACTIVO" %}
+                    selected
+                {% endif %}
+            >
+                INACTIVO
+            </option>
+
+        </select>
+
+        <br><br>
+
+        <label>Observación</label>
+
+        <textarea name="observacion">{{ accion.observacion|default:'' }}</textarea>
+
+        <br><br>
+
+        <button type="submit" class="boton">
+            Guardar
+        </button>
+
+        <a href="{% url 'lista_acciones' %}">
+            Cancelar
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

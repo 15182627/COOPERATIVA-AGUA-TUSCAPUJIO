@@ -1,0 +1,215 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+Nuevo periodo - Lecturas
+{% endblock %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <div class="pagina-header">
+
+        <div>
+
+            <h1>Nuevo periodo</h1>
+
+            <p class="subtitulo">
+                Crear un nuevo periodo de lectura
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="formulario-contenedor">
+
+        {% if error %}
+
+            <div class="mensaje-error">
+                {{ error }}
+            </div>
+
+        {% endif %}
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <div class="form-grid">
+
+                <div class="campo">
+
+                    <label>
+                        Mes *
+                    </label>
+
+                    <select
+                        name="mes"
+                        required
+                    >
+
+                        <option value="">
+                            Seleccionar mes
+                        </option>
+
+                        <option value="1">Enero</option>
+                        <option value="2">Febrero</option>
+                        <option value="3">Marzo</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Mayo</option>
+                        <option value="6">Junio</option>
+                        <option value="7">Julio</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Gestión *
+                    </label>
+
+                    <input
+                        type="number"
+                        name="gestion"
+                        min="2000"
+                        max="2100"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Fecha de inicio *
+                    </label>
+
+                    <input
+                        type="date"
+                        name="fecha_inicio"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Fecha de fin *
+                    </label>
+
+                    <input
+                        type="date"
+                        name="fecha_fin"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Fecha límite de pago
+                    </label>
+
+                    <input
+                        type="date"
+                        name="fecha_limite_pago"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Estado
+                    </label>
+
+                <select name="estado">
+
+                <option value="NO_HABILITADO">
+                    NO HABILITADO
+                    </option>
+
+                    <option value="HABILITADO">
+                    HABILITADO
+                 </option>
+
+                <option value="EN_LECTURA">
+                   EN LECTURA
+                </option>
+
+                <option value="LECTURA_CERRADA">
+                   LECTURA CERRADA
+                </option>
+
+             <option value="EN_COBRANZA">
+                 EN COBRANZA
+             </option>
+
+             <option value="CERRADO">
+                 CERRADO
+             </option>
+
+            </select>
+
+            </div>
+
+
+                <div class="campo campo-completo">
+
+                    <label>
+                        Observación
+                    </label>
+
+                    <textarea
+                        name="observacion"
+                        rows="4"
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+
+            <div class="formulario-acciones">
+
+                <a
+                    href="{% url 'lista_periodos' %}"
+                    class="btn-accion"
+                >
+                    Cancelar
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn-principal"
+                >
+                    Guardar periodo
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

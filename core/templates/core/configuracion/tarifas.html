@@ -1,0 +1,91 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <div class="cabecera-pagina">
+
+        <h1>Tarifas</h1>
+
+        <a
+            href="{% url 'nueva_tarifa' %}"
+            class="boton"
+        >
+            + Nueva tarifa
+        </a>
+
+    </div>
+
+    <table class="tabla-socios">
+
+        <thead>
+
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Consumo máximo</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for tarifa in tarifas %}
+
+        <tr>
+
+            <td>{{ tarifa.codigo }}</td>
+
+            <td>{{ tarifa.nombre }}</td>
+
+            <td>{{ tarifa.descripcion|default:"-" }}</td>
+
+            <td>{{ tarifa.consumo_maximo|default:"-" }}</td>
+
+            <td>{{ tarifa.estado }}</td>
+
+            <td>
+
+                <a href="{% url 'editar_tarifa' tarifa.id_tarifa %}">
+                    Editar
+                </a>
+
+                <a href="{% url 'lista_rangos_tarifa' tarifa.id_tarifa %}">
+                    Rangos
+                </a>
+
+                <form
+                    method="post"
+                    action="{% url 'cambiar_estado_tarifa' tarifa.id_tarifa %}"
+                    style="display:inline;"
+                >
+
+                    {% csrf_token %}
+
+                    <button type="submit">
+                        {% if tarifa.estado == "ACTIVO" %}
+                            Desactivar
+                        {% else %}
+                            Activar
+                        {% endif %}
+                    </button>
+
+                </form>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <h1>Utilidades</h1>
+
+    <p>Socios: {{ total_socios }}</p>
+    <p>Medidores: {{ total_medidores }}</p>
+    <p>Lecturas: {{ total_lecturas }}</p>
+    <p>Consumos: {{ total_consumos }}</p>
+    <p>Deudas: {{ total_deudas }}</p>
+    <p>Pagos: {{ total_pagos }}</p>
+
+    <hr>
+
+    <p>
+        <a href="{% url 'diagnostico_datos' %}">
+            Diagnóstico de datos
+        </a>
+    </p>
+
+    <form
+        method="post"
+        action="{% url 'sincronizar_estados_deudas' %}"
+    >
+
+        {% csrf_token %}
+
+        <button type="submit">
+            Sincronizar estados de deudas
+        </button>
+
+    </form>
+
+    <br>
+
+    <form
+        method="post"
+        action="{% url 'recalcular_saldos_cajas' %}"
+    >
+
+        {% csrf_token %}
+
+        <button type="submit">
+            Recalcular saldos de cajas
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

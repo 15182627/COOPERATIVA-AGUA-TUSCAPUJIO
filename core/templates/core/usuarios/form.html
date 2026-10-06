@@ -1,0 +1,146 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <h1>
+        {% if usuario_editar %}
+            Editar usuario
+        {% else %}
+            Nuevo usuario
+        {% endif %}
+    </h1>
+
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <label>Nombre de usuario</label>
+
+        <input
+            type="text"
+            name="nombre_usuario"
+            value="{{ usuario_editar.nombre_usuario|default:'' }}"
+            required
+        >
+
+        <br><br>
+
+        <label>Nombre completo</label>
+
+        <input
+            type="text"
+            name="nombre_completo"
+            value="{{ usuario_editar.nombre_completo|default:'' }}"
+            required
+        >
+
+        <br><br>
+
+        <label>Correo</label>
+
+        <input
+            type="email"
+            name="correo"
+            value="{{ usuario_editar.correo|default:'' }}"
+        >
+
+        <br><br>
+
+        <label>Rol</label>
+
+        <select name="id_rol" required>
+
+            {% for rol in roles %}
+
+            <option
+                value="{{ rol.id_rol }}"
+                {% if usuario_editar and usuario_editar.id_rol.id_rol == rol.id_rol %}
+                    selected
+                {% endif %}
+            >
+
+                {{ rol.nombre }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+        <br><br>
+
+        <label>
+            {% if usuario_editar %}
+                Nueva contraseña
+            {% else %}
+                Contraseña
+            {% endif %}
+        </label>
+
+        <input
+            type="password"
+            name="password"
+            {% if not usuario_editar %}
+                required
+            {% endif %}
+        >
+
+        {% if usuario_editar %}
+
+            <small>
+                Déjala vacía para conservar la contraseña actual.
+            </small>
+
+        {% endif %}
+
+        <br><br>
+
+        {% if usuario_editar %}
+
+        <label>Estado</label>
+
+        <select name="estado">
+
+            <option
+                value="ACTIVO"
+                {% if usuario_editar.estado == "ACTIVO" %}
+                    selected
+                {% endif %}
+            >
+                ACTIVO
+            </option>
+
+            <option
+                value="INACTIVO"
+                {% if usuario_editar.estado == "INACTIVO" %}
+                    selected
+                {% endif %}
+            >
+                INACTIVO
+            </option>
+
+        </select>
+
+        <br><br>
+
+        {% endif %}
+
+        <button type="submit" class="boton">
+            Guardar
+        </button>
+
+        <a href="{% url 'lista_usuarios' %}">
+            Cancelar
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

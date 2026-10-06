@@ -1,0 +1,97 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <div class="cabecera-pagina">
+        <h1>Acciones de socios</h1>
+
+        <a href="{% url 'nueva_accion' %}" class="boton">
+            + Nueva acción
+        </a>
+    </div>
+
+    <form method="get">
+        <input
+            type="text"
+            name="q"
+            value="{{ q }}"
+            placeholder="Buscar socio o código..."
+        >
+
+        <button type="submit" class="boton">
+            Buscar
+        </button>
+    </form>
+
+    <br>
+
+    <table class="tabla-socios">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Socio</th>
+                <th>Código</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Observación</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for accion in acciones %}
+            <tr>
+                <td>{{ accion.id_accion }}</td>
+
+                <td>
+                    {{ accion.id_socio.numero_socio }} -
+                    {{ accion.id_socio.nombre }}
+                    {{ accion.id_socio.apellidos }}
+                </td>
+
+                <td>{{ accion.codigo_accion|default:"-" }}</td>
+
+                <td>{{ accion.fecha_registro|date:"d/m/Y" }}</td>
+
+                <td>{{ accion.estado }}</td>
+
+                <td>{{ accion.observacion|default:"-" }}</td>
+
+                <td>
+                    <a href="{% url 'editar_accion' accion.id_accion %}">
+                        Editar
+                    </a>
+
+                    <form method="post"
+                          action="{% url 'cambiar_estado_accion' accion.id_accion %}"
+                          style="display:inline;">
+                        {% csrf_token %}
+
+                        <button type="submit">
+                            {% if accion.estado == "ACTIVO" %}
+                                Desactivar
+                            {% else %}
+                                Activar
+                            {% endif %}
+                        </button>
+                    </form>
+                </td>
+            </tr>
+
+            {% empty %}
+
+            <tr>
+                <td colspan="7">
+                    No existen acciones registradas.
+                </td>
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

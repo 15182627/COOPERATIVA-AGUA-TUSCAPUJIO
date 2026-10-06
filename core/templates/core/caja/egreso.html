@@ -1,0 +1,88 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Registrar egreso - Cooperativa de Agua{% endblock %}
+
+{% block content %}
+
+<div class="contenedor">
+
+    <h1>Registrar egreso</h1>
+
+    {% if error %}
+
+        <div class="error">
+            {{ error }}
+        </div>
+
+    {% endif %}
+
+    <div class="formulario-contenedor">
+<form method="POST" class="form-simple">
+
+        {% csrf_token %}
+
+        <label>
+            Importe
+        </label>
+
+        <input
+            type="number"
+            name="importe"
+            step="0.01"
+            min="0.01"
+            required
+        >
+
+        <label>
+            Concepto
+        </label>
+
+        <input
+            type="text"
+            name="concepto"
+            required
+        >
+
+        <label>
+            Usuario
+        </label>
+
+        <select name="id_usuario" required>
+
+            <option value="">
+                Seleccione un usuario
+            </option>
+
+            {% for usuario in usuarios %}
+
+                <option value="{{ usuario.id_usuario }}">
+                    {{ usuario.nombre_completo }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <label>
+            Observación
+        </label>
+
+        <textarea
+            name="observacion"
+        ></textarea>
+
+        <div class="formulario-acciones">
+<a href="{% url 'caja_principal' %}" class="btn">
+            Cancelar
+        </a>
+<button type="submit" class="btn-principal">
+            Registrar egreso
+        </button>
+</div>
+
+    </form>
+</div>
+
+</div>
+
+{% endblock %}

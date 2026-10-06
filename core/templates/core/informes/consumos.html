@@ -1,0 +1,88 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <h1>Informe de consumos</h1>
+
+    <form method="get">
+
+        <select name="periodo">
+
+            <option value="">
+                Todos los periodos
+            </option>
+
+            {% for periodo in periodos %}
+
+            <option
+                value="{{ periodo.id_periodo }}"
+                {% if periodo_id|stringformat:"s" == periodo.id_periodo|stringformat:"s" %}
+                    selected
+                {% endif %}
+            >
+
+                {{ periodo.mes }}/{{ periodo.gestion }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+        <button type="submit">
+            Filtrar
+        </button>
+
+    </form>
+
+    <br>
+
+    <p>Total consumo: {{ total_consumo }}</p>
+
+    <p>Total importe: {{ total_importe }}</p>
+
+    <table class="tabla-socios">
+
+        <thead>
+
+            <tr>
+                <th>Socio</th>
+                <th>Periodo</th>
+                <th>Consumo</th>
+                <th>Importe</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for consumo in consumos %}
+
+        <tr>
+
+            <td>
+                {{ consumo.id_socio.numero_socio }}
+            </td>
+
+            <td>
+                {{ consumo.id_periodo.mes }}/
+                {{ consumo.id_periodo.gestion }}
+            </td>
+
+            <td>{{ consumo.consumo }}</td>
+
+            <td>{{ consumo.importe }}</td>
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

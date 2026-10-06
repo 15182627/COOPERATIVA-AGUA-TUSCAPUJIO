@@ -1,0 +1,257 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+Consultar deudas
+{% endblock %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <div class="pagina-header">
+
+        <div>
+
+            <h1>
+                Consultar deudas
+            </h1>
+
+            <p class="subtitulo">
+                Consulta de deudas generadas por periodo
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="acciones-planilla">
+
+    {% for periodo in periodos %}
+
+        {% if periodo.id_periodo|stringformat:"s" == periodo_seleccionado|stringformat:"s" %}
+
+            <a
+                href="{% url 'generar_deudas' periodo.id_periodo %}"
+                class="btn-principal"
+            >
+                Generar deudas de este periodo
+            </a>
+
+        {% endif %}
+
+    {% endfor %}
+
+</div>
+
+
+    <!-- FILTRO -->
+
+    <div class="filtros">
+
+        <form method="get">
+
+            <div class="campo">
+
+                <label for="periodo">
+                    Periodo
+                </label>
+
+                <select
+                    name="periodo"
+                    id="periodo"
+                >
+
+                    <option value="">
+                        Todos los periodos
+                    </option>
+
+                    {% for periodo in periodos %}
+
+                        <option
+                            value="{{ periodo.id_periodo }}"
+                            {% if periodo_seleccionado|stringformat:"s" == periodo.id_periodo|stringformat:"s" %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ periodo.mes }}/{{ periodo.gestion }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn-principal"
+            >
+                Filtrar
+            </button>
+
+
+            <a
+                href="{% url 'lista_deudas' %}"
+                class="btn-accion"
+            >
+                Limpiar
+            </a>
+
+        </form>
+
+    </div>
+
+
+    <!-- TABLA -->
+
+    <div class="tabla-contenedor">
+
+        <table class="tabla-socios">
+
+            <thead>
+
+                <tr>
+
+                    <th>Periodo</th>
+
+                    <th>N.º Socio</th>
+
+                    <th>Socio</th>
+
+                    <th>Fecha generación</th>
+
+                    <th>Vencimiento</th>
+
+                    <th>Subtotal</th>
+
+                    <th>Recargo</th>
+
+                    <th>Total</th>
+
+                    <th>Estado</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for deuda in deudas %}
+
+                <tr>
+
+                    <td>
+                        {{ deuda.id_periodo.mes }}/{{ deuda.id_periodo.gestion }}
+                    </td>
+
+
+                    <td>
+                        {{ deuda.id_socio.numero_socio }}
+                    </td>
+
+
+                    <td>
+
+                        {{ deuda.id_socio.nombres }}
+
+                        {{ deuda.id_socio.apellidos }}
+
+                    </td>
+
+
+                    <td>
+                        {{ deuda.fecha_generacion }}
+                    </td>
+
+
+                    <td>
+
+                        {% if deuda.fecha_vencimiento %}
+
+                            {{ deuda.fecha_vencimiento }}
+
+                        {% else %}
+
+                            -
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+                        Bs {{ deuda.subtotal }}
+                    </td>
+
+
+                    <td>
+                        Bs {{ deuda.recargo }}
+                    </td>
+
+
+                    <td>
+                        <strong>
+                            Bs {{ deuda.total }}
+                        </strong>
+                    </td>
+
+
+                    <td>
+
+                        {% if deuda.estado == "PENDIENTE" %}
+
+                            <span class="estado">
+                                PENDIENTE
+                            </span>
+
+                        {% elif deuda.estado == "PAGADA" %}
+
+                            <span class="estado activo">
+                                PAGADA
+                            </span>
+
+                        {% elif deuda.estado == "VENCIDA" %}
+
+                            <span class="estado">
+                                VENCIDA
+                            </span>
+
+                        {% else %}
+
+                            <span class="estado">
+                                {{ deuda.estado }}
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+
+                {% empty %}
+
+                <tr>
+
+                    <td
+                        colspan="9"
+                        class="sin-datos"
+                    >
+                        No existen deudas registradas.
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

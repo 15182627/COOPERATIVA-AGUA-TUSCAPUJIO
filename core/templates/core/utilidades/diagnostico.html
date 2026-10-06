@@ -1,0 +1,75 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <h1>Diagnóstico de datos</h1>
+
+    <h2>Socios activos sin medidor</h2>
+
+    {% for socio in socios_sin_medidor %}
+
+        <p>
+            {{ socio.numero_socio }} -
+            {{ socio.nombre }}
+            {{ socio.apellido_paterno }}
+        </p>
+
+    {% empty %}
+
+        <p>✓ No se encontraron socios sin medidor.</p>
+
+    {% endfor %}
+
+    <hr>
+
+    <h2>Deudas sin detalle</h2>
+
+    {% for deuda in deudas_sin_detalle %}
+
+        <p>
+            Deuda #{{ deuda.id_deuda }}
+        </p>
+
+    {% empty %}
+
+        <p>✓ No existen deudas sin detalle.</p>
+
+    {% endfor %}
+
+    <hr>
+
+    <h2>Consumos sin rango tarifario</h2>
+
+    {% for consumo in consumos_sin_rango %}
+
+        <p>
+            Consumo #{{ consumo.id_consumo }}
+        </p>
+
+    {% empty %}
+
+        <p>✓ No existen consumos sin rango.</p>
+
+    {% endfor %}
+
+    <hr>
+
+    <h2>Pagos sin caja</h2>
+
+    {% for pago in pagos_sin_caja %}
+
+        <p>
+            Pago #{{ pago.id_pago }}
+        </p>
+
+    {% empty %}
+
+        <p>✓ No existen pagos sin caja.</p>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

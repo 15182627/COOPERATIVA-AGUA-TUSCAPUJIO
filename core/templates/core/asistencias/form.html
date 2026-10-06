@@ -1,0 +1,84 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <h1>
+        {% if asistencia %}
+            Editar asistencia
+        {% else %}
+            Registrar asistencia
+        {% endif %}
+    </h1>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <label>Socio</label>
+
+        <select name="id_socio" required>
+
+            {% for socio in socios %}
+
+            <option
+                value="{{ socio.id_socio }}"
+                {% if asistencia and asistencia.id_socio.id_socio == socio.id_socio %}
+                    selected
+                {% endif %}
+            >
+
+                {{ socio.numero_socio }} -
+                {{ socio.nombre }}
+                {{ socio.apellido_paterno }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+        <br><br>
+
+        <label>Fecha</label>
+
+        <input
+            type="date"
+            name="fecha"
+            required
+            value="{% if asistencia %}{{ asistencia.fecha|date:'Y-m-d' }}{% endif %}"
+        >
+
+        <br><br>
+
+        <label>Tipo</label>
+
+        <input
+            type="text"
+            name="tipo"
+            value="{{ asistencia.tipo|default:'' }}"
+            placeholder="Asamblea, reunión, etc."
+        >
+
+        <br><br>
+
+        <label>Observación</label>
+
+        <textarea name="observacion">{{ asistencia.observacion|default:'' }}</textarea>
+
+        <br><br>
+
+        <button type="submit" class="boton">
+            Guardar
+        </button>
+
+        <a href="{% url 'lista_asistencias' %}">
+            Cancelar
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

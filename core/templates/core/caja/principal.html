@@ -1,0 +1,171 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Caja - Cooperativa de Agua{% endblock %}
+
+{% block content %}
+
+<div class="contenedor">
+
+    <h1>💰 Caja</h1>
+
+    {% if not caja %}
+
+        <div class="mensaje">
+            <h2>No hay una caja abierta</h2>
+
+            <p>
+                Actualmente no existe una caja abierta.
+            </p>
+
+            <a href="{% url 'abrir_caja' %}" class="boton verde">
+                Abrir caja
+            </a>
+        </div>
+
+    {% else %}
+
+        <div class="tarjetas">
+
+            <div class="tarjeta">
+                <h3>Estado</h3>
+                <div class="saldo">
+                    {{ caja.estado }}
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <h3>Saldo inicial</h3>
+                <div class="saldo">
+                    Bs {{ caja.saldo_inicial }}
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <h3>Ingresos</h3>
+                <div class="saldo">
+                    Bs {{ ingresos }}
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <h3>Egresos</h3>
+                <div class="saldo">
+                    Bs {{ egresos }}
+                </div>
+            </div>
+
+        </div>
+
+        <div class="tarjeta" style="margin-bottom:25px;">
+            <h2>Saldo actual</h2>
+
+            <div class="saldo">
+                Bs {{ saldo_actual }}
+            </div>
+
+            <p>
+                Fecha de apertura:
+                {{ caja.fecha_apertura|date:"d/m/Y" }}
+            </p>
+        </div>
+
+        <div class="acciones">
+
+            <a
+                href="{% url 'caja_movimientos' %}"
+                class="boton"
+            >
+                Ver movimientos
+            </a>
+            {% if usuario.id_rol_id == 1 or usuario.id_rol_id == 2 %}
+                <a
+                    href="{% url 'registrar_egreso' %}"
+                    class="boton rojo"
+                >
+                    Registrar egreso
+                </a>
+
+            {% endif %}
+            {% if usuario.id_rol_id == 1 or usuario.id_rol_id == 2 %}
+            <a
+                href="{% url 'cerrar_caja' %}"
+                class="boton verde"
+            >
+                Cerrar caja
+            </a>
+            {% endif %}
+            
+            <a href="{% url 'historial_cajas' %}">
+                Historial de cajas
+            </a>
+
+        </div>
+
+        <h2>Últimos movimientos</h2>
+
+        <div class="tabla-contenedor">
+<table>
+
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Concepto</th>
+                    <th>Importe</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for movimiento in movimientos %}
+
+                    <tr>
+
+                        <td>
+                            {{ movimiento.fecha_movimiento|date:"d/m/Y H:i" }}
+                        </td>
+
+                        <td>
+
+                            {% if movimiento.tipo == "INGRESO" %}
+                                <span class="ingreso">
+                                    INGRESO
+                                </span>
+                            {% else %}
+                                <span class="egreso">
+                                    EGRESO
+                                </span>
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            {{ movimiento.concepto }}
+                        </td>
+
+                        <td>
+                            Bs {{ movimiento.importe }}
+                        </td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+                        <td colspan="4">
+                            No existen movimientos registrados.
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+</div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

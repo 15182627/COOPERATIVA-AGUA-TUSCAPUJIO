@@ -1,0 +1,130 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+Cerrar caja
+{% endblock %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <div class="pagina-header">
+
+        <div>
+
+            <h1>
+                Cerrar caja
+            </h1>
+
+            <p class="subtitulo">
+                Caja #{{ caja.id_caja }}
+            </p>
+
+        </div>
+
+    </div>
+
+
+    {% if error %}
+
+        <div class="mensaje-error">
+            {{ error }}
+        </div>
+
+    {% endif %}
+
+
+    <div class="tabla-contenedor">
+
+        <table class="tabla-socios">
+
+            <tr>
+                <th>Saldo inicial</th>
+                <td>
+                    Bs {{ caja.saldo_inicial }}
+                </td>
+            </tr>
+
+            <tr>
+                <th>Total ingresos</th>
+                <td>
+                    Bs {{ ingresos }}
+                </td>
+            </tr>
+
+            <tr>
+                <th>Total egresos</th>
+                <td>
+                    Bs {{ egresos }}
+                </td>
+            </tr>
+
+            <tr>
+                <th>Saldo final</th>
+                <td>
+                    <strong>
+                        Bs {{ saldo_actual }}
+                    </strong>
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="formulario">
+
+            <label>
+                Usuario que cierra la caja
+            </label>
+
+            <select
+                name="id_usuario"
+                required
+            >
+
+                <option value="">
+                    Seleccione un usuario
+                </option>
+
+                {% for usuario in usuarios %}
+
+                    <option value="{{ usuario.id_usuario }}">
+                        {{ usuario.nombre_completo }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <div class="acciones-formulario">
+
+                <button
+                    type="submit"
+                    class="btn-principal"
+                >
+                    Cerrar caja
+                </button>
+
+                <a
+                    href="{% url 'caja_principal' %}"
+                    class="btn-accion"
+                >
+                    Cancelar
+                </a>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

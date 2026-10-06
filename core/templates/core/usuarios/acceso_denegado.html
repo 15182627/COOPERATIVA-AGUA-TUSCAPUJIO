@@ -1,0 +1,30 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Acceso denegado - Cooperativa de Agua{% endblock %}
+
+{% block content %}
+
+<div class="mensaje">
+
+    <h1>Acceso denegado</h1>
+
+    <p>
+        No tienes permisos para acceder a esta sección.
+    </p>
+
+    {% if usuario %}
+
+        <p>
+            Usuario:
+            <strong>{{ usuario.nombre_completo }}</strong>
+        </p>
+
+    {% endif %}
+
+    <a href="{% url 'inicio' %}">
+        Volver al inicio
+    </a>
+
+</div>
+
+{% endblock %}

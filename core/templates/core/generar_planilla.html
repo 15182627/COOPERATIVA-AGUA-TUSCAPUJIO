@@ -1,0 +1,72 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+Generar planilla - Lecturas
+{% endblock %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <div class="pagina-header">
+
+        <div>
+
+            <h1>Generar planilla</h1>
+
+            <p class="subtitulo">
+                Periodo {{ periodo.mes }}/{{ periodo.gestion }}
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="formulario-contenedor">
+
+        <h2>
+            Generar planilla de lecturas
+        </h2>
+
+        <p>
+            El sistema tomará los medidores activos y creará
+            automáticamente una lectura para este periodo.
+        </p>
+
+        <p>
+            La lectura anterior será tomada de la última lectura
+            registrada o, si no existe, de la lectura inicial
+            del medidor.
+        </p>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="formulario-acciones">
+
+                <a
+                    href="{% url 'lista_periodos' %}"
+                    class="btn-accion"
+                >
+                    Cancelar
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn-principal"
+                >
+                    Generar planilla
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

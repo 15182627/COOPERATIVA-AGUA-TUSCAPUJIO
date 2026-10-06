@@ -1,0 +1,131 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <div class="cabecera-pagina">
+        <h1>Asistencia</h1>
+
+        <a href="{% url 'nueva_asistencia' %}" class="boton">
+            + Registrar asistencia
+        </a>
+    </div>
+
+    <form method="get">
+
+        <select name="socio">
+
+            <option value="">Todos los socios</option>
+
+            {% for socio in socios %}
+
+            <option
+                value="{{ socio.id_socio }}"
+                {% if socio_filtro|stringformat:"s" == socio.id_socio|stringformat:"s" %}
+                    selected
+                {% endif %}
+            >
+
+                {{ socio.numero_socio }} -
+                {{ socio.nombre }}
+                {{ socio.apellidos }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+        <input
+            type="date"
+            name="fecha"
+            value="{{ fecha_filtro }}"
+        >
+
+        <input
+            type="text"
+            name="tipo"
+            value="{{ tipo_filtro }}"
+            placeholder="Tipo"
+        >
+
+        <button type="submit">
+            Filtrar
+        </button>
+
+    </form>
+
+    <br>
+
+    <table class="tabla-socios">
+
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Socio</th>
+                <th>Tipo</th>
+                <th>Observación</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        {% for asistencia in asistencias %}
+
+        <tr>
+
+            <td>{{ asistencia.fecha|date:"d/m/Y" }}</td>
+
+            <td>
+                {{ asistencia.id_socio.numero_socio }} -
+                {{ asistencia.id_socio.nombre }}
+                {{ asistencia.id_socio.apellidos }}
+            </td>
+
+            <td>{{ asistencia.tipo|default:"-" }}</td>
+
+            <td>{{ asistencia.observacion|default:"-" }}</td>
+
+            <td>
+
+                <a href="{% url 'editar_asistencia' asistencia.id_asistencia %}">
+                    Editar
+                </a>
+
+                <form
+                    method="post"
+                    action="{% url 'eliminar_asistencia' asistencia.id_asistencia %}"
+                    style="display:inline;"
+                >
+
+                    {% csrf_token %}
+
+                    <button type="submit">
+                        Eliminar
+                    </button>
+
+                </form>
+
+            </td>
+
+        </tr>
+
+        {% empty %}
+
+        <tr>
+            <td colspan="5">
+                No existen asistencias registradas.
+            </td>
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

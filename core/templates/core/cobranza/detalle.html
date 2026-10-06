@@ -1,0 +1,385 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Detalle de Cobranza - Cooperativa de Agua{% endblock %}
+
+{% block content %}
+
+<div class="contenedor">
+
+    <a
+        href="{% url 'lista_cobranza' %}"
+        class="boton-volver"
+    >
+        ← Volver a cobranza
+    </a>
+
+
+    <!-- ============================================== -->
+    <!-- DATOS DE LA DEUDA -->
+    <!-- ============================================== -->
+
+    <div class="tarjeta">
+
+        <h1>
+            Cobranza #{{ deuda.id_deuda }}
+        </h1>
+
+        <div class="datos">
+
+            <div class="dato">
+                <strong>Socio:</strong>
+                {{ deuda.id_socio.numero_socio }}
+            </div>
+
+            <div class="dato">
+                <strong>Nombre:</strong>
+                {{ deuda.id_socio.nombres }}
+                {{ deuda.id_socio.apellidos }}
+            </div>
+
+            <div class="dato">
+                <strong>Periodo:</strong>
+                {{ deuda.id_periodo.mes }}/{{ deuda.id_periodo.gestion }}
+            </div>
+
+            <div class="dato">
+                <strong>Estado:</strong>
+                {{ deuda.estado }}
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================================== -->
+    <!-- DETALLE -->
+    <!-- ============================================== -->
+
+    <div class="tarjeta">
+
+        <h2>Detalle de la deuda</h2>
+
+        <div class="tabla-contenedor tabla-plana">
+<table>
+
+            <thead>
+
+                <tr>
+                    <th>Concepto</th>
+                    <th>Descripción</th>
+                    <th>Importe</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for detalle in detalles %}
+
+                <tr>
+
+                    <td>
+                        {{ detalle.concepto }}
+                    </td>
+
+                    <td>
+                        {{ detalle.descripcion }}
+                    </td>
+
+                    <td>
+                        Bs {{ detalle.importe }}
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+                    <td colspan="3">
+                        No existen detalles.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+</div>
+
+        <br>
+
+        <div class="total">
+            Total deuda:
+            Bs {{ deuda.total|floatformat:2 }}
+        </div>
+
+    </div>
+
+
+    <!-- ============================================== -->
+    <!-- ESTADO DE PAGOS -->
+    <!-- ============================================== -->
+
+    <div class="tarjeta">
+
+        <h2>Estado del pago</h2>
+
+        <p>
+            <strong>Total deuda:</strong>
+            Bs {{ deuda.total|floatformat:2 }}
+        </p>
+
+        <p>
+            <strong>Total pagado:</strong>
+            Bs {{ total_pagado|floatformat:2 }}
+        </p>
+
+        <p class="pendiente">
+            Saldo pendiente:
+            Bs {{ saldo_pendiente|floatformat:2 }}
+        </p>
+
+    </div>
+
+
+    <!-- ============================================== -->
+    <!-- PAGOS ANTERIORES -->
+    <!-- ============================================== -->
+
+    <div class="tarjeta">
+
+        <h2>Pagos registrados</h2>
+
+        <div class="tabla-contenedor tabla-plana">
+<table>
+
+            <thead>
+
+                <tr>
+                    <th>Fecha</th>
+                    <th>Importe</th>
+                    <th>Método</th>
+                    <th>Usuario</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for pago in pagos %}
+
+                <tr>
+
+                    <td>
+                        {{ pago.fecha_pago }}
+                    </td>
+
+                    <td>
+                        Bs {{ pago.importe }}
+                    </td>
+
+                    <td>
+                        {{ pago.metodo_pago }}
+                    </td>
+
+                    <td>
+                        {{ pago.id_usuario.nombre_completo }}
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+                    <td colspan="4">
+                        No existen pagos registrados.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+</div>
+
+    </div>
+
+
+    <!-- ============================================== -->
+    <!-- MENSAJE DE ERROR -->
+    <!-- ============================================== -->
+
+    {% if error %}
+
+    <div class="error">
+        {{ error }}
+    </div>
+
+    {% endif %}
+
+
+    <!-- ============================================== -->
+    <!-- FORMULARIO DE COBRO -->
+    <!-- ============================================== -->
+
+    {% if deuda.estado != "PAGADA" %}
+
+        {% if caja %}
+
+        <div class="tarjeta">
+
+            <h2>Registrar cobro</h2>
+
+            <p>
+                Caja abierta:
+                <strong>
+                    #{{ caja.id_caja }}
+                </strong>
+            </p>
+
+            <p>
+                Saldo inicial:
+                <strong>
+                    Bs {{ caja.saldo_inicial }}
+                </strong>
+            </p>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <label>
+                    Importe
+                </label>
+
+                <input
+                    type="number"
+                    name="importe"
+                    step="0.01"
+                    min="0.01"
+                    max="{{ saldo_pendiente }}"
+                    value="{{ saldo_pendiente }}"
+                    required
+                >
+
+                <label>
+                    Método de pago
+                </label>
+
+                <select
+                    name="metodo_pago"
+                    required
+                >
+
+                    <option value="EFECTIVO">
+                        EFECTIVO
+                    </option>
+
+                    <option value="TRANSFERENCIA">
+                        TRANSFERENCIA
+                    </option>
+
+                    <option value="QR">
+                        QR
+                    </option>
+
+                    <option value="OTRO">
+                        OTRO
+                    </option>
+
+                </select>
+
+
+                <label>
+                    Usuario que registra
+                </label>
+
+                <select
+                    name="id_usuario"
+                    required
+                >
+
+                    <option value="">
+                        Seleccione un usuario
+                    </option>
+
+                    {% for usuario in usuarios %}
+
+                    <option value="{{ usuario.id_usuario }}">
+                        {{ usuario.nombre_completo }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+
+                <label>
+                    Observación
+                </label>
+
+                <textarea
+                    name="observacion"
+                    placeholder="Observación opcional"
+                ></textarea>
+
+
+                <button type="submit">
+                    Registrar pago
+                </button>
+
+            </form>
+
+        </div>
+
+        {% else %}
+
+        <div class="tarjeta">
+
+            <div class="bloqueado">
+
+                <strong>
+                    No se puede registrar el pago.
+                </strong>
+
+                <br><br>
+
+                Actualmente no existe una caja abierta.
+
+                <br><br>
+
+                Debe abrir una caja antes de realizar el cobro.
+
+                <br><br>
+
+                <a href="{% url 'abrir_caja' %}">
+                    Ir a abrir caja
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    {% else %}
+
+    <div class="tarjeta">
+
+        <div class="ok">
+
+            Esta deuda se encuentra
+            <strong>PAGADA</strong>.
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

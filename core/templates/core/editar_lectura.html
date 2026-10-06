@@ -1,0 +1,148 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+Editar lectura
+{% endblock %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <div class="pagina-header">
+
+        <div>
+
+            <h1>
+                Editar lectura
+            </h1>
+
+            <p class="subtitulo">
+                Corregir lectura registrada
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="formulario-contenedor">
+
+        {% if error %}
+
+            <div class="mensaje-error">
+                {{ error }}
+            </div>
+
+        {% endif %}
+
+
+        <div class="datos-lectura">
+
+            <div class="detalle-item">
+
+                <strong>
+                    Socio
+                </strong>
+
+                <span>
+                    {{ lectura.id_medidor.id_socio.nombres }}
+                    {{ lectura.id_medidor.id_socio.apellidos }}
+                </span>
+
+            </div>
+
+
+            <div class="detalle-item">
+
+                <strong>
+                    Medidor
+                </strong>
+
+                <span>
+                    {{ lectura.id_medidor.numero_medidor }}
+                </span>
+
+            </div>
+
+
+            <div class="detalle-item">
+
+                <strong>
+                    Lectura anterior
+                </strong>
+
+                <span>
+                    {{ lectura.lectura_anterior }}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <div class="form-grid">
+
+                <div class="campo">
+
+                    <label>
+                        Lectura actual *
+                    </label>
+
+                    <input
+                        type="number"
+                        name="lectura_actual"
+                        step="0.01"
+                        min="{{ lectura.lectura_anterior }}"
+                        value="{{ lectura.lectura_actual }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo campo-completo">
+
+                    <label>
+                        Observación
+                    </label>
+
+                    <textarea
+                        name="observacion"
+                        rows="4"
+                    >{{ lectura.observacion|default:'' }}</textarea>
+
+                </div>
+
+            </div>
+
+
+            <div class="formulario-acciones">
+
+                <a
+                    href="{% url 'planilla_lecturas' lectura.id_periodo.id_periodo %}"
+                    class="btn-accion"
+                >
+                    Cancelar
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn-principal"
+                >
+                    Guardar cambios
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,481 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Inicio - Cooperativa de Agua{% endblock %}
+
+{% block content %}
+
+<div class="dashboard">
+
+    <!-- ENCABEZADO -->
+    <div class="dashboard-header dashboard-hero">
+        <div class="dashboard-hero-copy">
+            <span class="hero-eyebrow"><span></span> GESTIÓN INTELIGENTE DEL AGUA</span>
+            <h1>Bienvenido, {{ usuario.nombre_completo }}</h1>
+
+            <p class="subtitulo">
+                Todo lo importante de tu cooperativa, en un solo lugar.
+            </p>
+
+            {% if usuario.id_rol_id == 1 %}
+                <span class="rol-badge">Administrador</span>
+            {% elif usuario.id_rol_id == 2 %}
+                <span class="rol-badge">Cajero</span>
+            {% elif usuario.id_rol_id == 3 %}
+                <span class="rol-badge">Lector</span>
+            {% endif %}
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+            <div class="hero-orbit hero-orbit-back"></div>
+            <div class="hero-orbit hero-orbit-front"></div>
+            <div class="hero-drop">
+                <span class="hero-drop-shine"></span>
+            </div>
+            <span class="hero-bubble hero-bubble-one"></span>
+            <span class="hero-bubble hero-bubble-two"></span>
+            <span class="hero-bubble hero-bubble-three"></span>
+            <div class="hero-platform"></div>
+        </div>
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- DASHBOARD ADMINISTRADOR -->
+    <!-- ===================================================== -->
+
+    {% if usuario.id_rol_id == 1 %}
+
+    <div class="panel">
+        <h2>Resumen general</h2>
+
+        <div class="cards">
+
+            <!-- SOCIOS -->
+            <div class="card">
+                <div class="card-icon">👥</div>
+
+                <div>
+                    <h3>Socios activos</h3>
+                    <p class="card-number">
+                        {{ total_socios }}
+                    </p>
+
+                    <a href="{% url 'lista_socios' %}">
+                        Ver socios →
+                    </a>
+                </div>
+            </div>
+
+
+            <!-- LECTURAS -->
+            <div class="card">
+                <div class="card-icon">📖</div>
+
+                <div>
+                    <h3>Lecturas pendientes</h3>
+                    <p class="card-number">
+                        {{ total_lecturas }}
+                    </p>
+
+                    <a href="{% url 'lista_periodos' %}">
+                        Ver lecturas →
+                    </a>
+                </div>
+            </div>
+
+
+            <!-- DEUDAS -->
+            <div class="card">
+                <div class="card-icon">💰</div>
+
+                <div>
+                    <h3>Deudas pendientes</h3>
+                    <p class="card-number">
+                        {{ total_deudas }}
+                    </p>
+
+                    <a href="{% url 'lista_deudas' %}">
+                        Ver deudas →
+                    </a>
+                </div>
+            </div>
+
+
+            <!-- MONTO PENDIENTE -->
+            <div class="card">
+                <div class="card-icon">💵</div>
+
+                <div>
+                    <h3>Monto pendiente</h3>
+
+                    <p class="card-number">
+                        Bs. {{ monto_pendiente|floatformat:2 }}
+                    </p>
+
+                    <a href="{% url 'lista_cobranza' %}">
+                        Ir a cobranza →
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- CAJA -->
+    <div class="panel">
+        <h2>Estado de caja</h2>
+
+        {% if caja %}
+
+            <div class="caja-resumen">
+
+                <div>
+                    <strong>Estado:</strong>
+
+                    {% if caja.estado == "ABIERTA" %}
+                        <span class="estado-activo">
+                            ABIERTA
+                        </span>
+                    {% else %}
+                        <span class="estado-inactivo">
+                            {{ caja.estado }}
+                        </span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <strong>Saldo actual:</strong>
+
+                    <span class="saldo">
+                        Bs. {{ saldo_caja|floatformat:2 }}
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="acciones-dashboard">
+
+                <a href="{% url 'caja_principal' %}" class="btn-dashboard">
+                    💵 Administrar caja
+                </a>
+
+                <a href="{% url 'caja_movimientos' %}" class="btn-dashboard">
+                    📋 Ver movimientos
+                </a>
+
+            </div>
+
+        {% else %}
+
+            <p>
+                No existe una caja abierta actualmente.
+            </p>
+
+            <a href="{% url 'caja_principal' %}" class="btn-dashboard">
+                Abrir caja
+            </a>
+
+        {% endif %}
+    </div>
+
+
+    <!-- ACCIONES RÁPIDAS ADMIN -->
+    <div class="panel">
+
+        <h2>Acciones rápidas</h2>
+
+        <div class="acciones-dashboard">
+
+            <a href="{% url 'lista_socios' %}" class="btn-dashboard">
+                👥 Gestionar socios
+            </a>
+
+            <a href="{% url 'lista_periodos' %}" class="btn-dashboard">
+                📖 Gestionar lecturas
+            </a>
+
+            <a href="{% url 'lista_cobranza' %}" class="btn-dashboard">
+                💰 Gestionar cobranza
+            </a>
+
+            <a href="{% url 'caja_principal' %}" class="btn-dashboard">
+                💵 Gestionar caja
+            </a>
+
+            <a href="{% url 'lista_usuarios' %}" class="btn-dashboard">
+                👤 Gestionar usuarios
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- DASHBOARD CAJERO -->
+    <!-- ===================================================== -->
+
+    {% elif usuario.id_rol_id == 2 %}
+
+    <div class="panel">
+
+        <h2>Resumen de cobranza</h2>
+
+        <div class="cards">
+
+            <!-- DEUDAS -->
+            <div class="card">
+
+                <div class="card-icon">💰</div>
+
+                <div>
+
+                    <h3>Deudas pendientes</h3>
+
+                    <p class="card-number">
+                        {{ total_deudas }}
+                    </p>
+
+                    <a href="{% url 'lista_cobranza' %}">
+                        Cobrar →
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- MONTO -->
+            <div class="card">
+
+                <div class="card-icon">💵</div>
+
+                <div>
+
+                    <h3>Por cobrar</h3>
+
+                    <p class="card-number">
+                        Bs. {{ monto_pendiente|floatformat:2 }}
+                    </p>
+
+                    <a href="{% url 'lista_deudas' %}">
+                        Consultar →
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- CAJA -->
+            <div class="card">
+
+                <div class="card-icon">🏦</div>
+
+                <div>
+
+                    <h3>Saldo de caja</h3>
+
+                    <p class="card-number">
+                        Bs. {{ saldo_caja|floatformat:2 }}
+                    </p>
+
+                    <a href="{% url 'caja_principal' %}">
+                        Ver caja →
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ESTADO CAJA CAJERO -->
+
+    <div class="panel">
+
+        <h2>Estado de caja</h2>
+
+        {% if caja %}
+
+            <p>
+                Caja actualmente:
+
+                {% if caja.estado == "ABIERTA" %}
+                    <span class="estado-activo">
+                        ABIERTA
+                    </span>
+                {% else %}
+                    <span class="estado-inactivo">
+                        {{ caja.estado }}
+                    </span>
+                {% endif %}
+            </p>
+
+            <p>
+                <strong>Saldo:</strong>
+                Bs. {{ saldo_caja|floatformat:2 }}
+            </p>
+
+        {% else %}
+
+            <p>
+                ⚠️ No hay una caja abierta.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- ACCIONES CAJERO -->
+
+    <div class="panel">
+
+        <h2>Acciones rápidas</h2>
+
+        <div class="acciones-dashboard">
+
+            <a href="{% url 'lista_cobranza' %}" class="btn-dashboard">
+                💰 Cobrar deuda
+            </a>
+
+            <a href="{% url 'lista_deudas' %}" class="btn-dashboard">
+                📋 Consultar deudas
+            </a>
+
+            <a href="{% url 'caja_principal' %}" class="btn-dashboard">
+                💵 Administrar caja
+            </a>
+
+            <a href="{% url 'caja_movimientos' %}" class="btn-dashboard">
+                📊 Ver movimientos
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- DASHBOARD LECTOR -->
+    <!-- ===================================================== -->
+
+    {% elif usuario.id_rol_id == 3 %}
+
+    <div class="panel">
+
+        <h2>Panel de lecturas</h2>
+
+        <div class="cards">
+
+            <!-- LECTURAS -->
+            <div class="card">
+
+                <div class="card-icon">📖</div>
+
+                <div>
+
+                    <h3>Lecturas pendientes</h3>
+
+                    <p class="card-number">
+                        {{ total_lecturas }}
+                    </p>
+
+                    <a href="{% url 'lista_periodos' %}">
+                        Registrar lecturas →
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- SOCIOS -->
+            <div class="card">
+
+                <div class="card-icon">👥</div>
+
+                <div>
+
+                    <h3>Socios</h3>
+
+                    <p class="card-number">
+                        {{ total_socios }}
+                    </p>
+
+                    <a href="{% url 'lista_socios' %}">
+                        Consultar socios →
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MENÚ RÁPIDO LECTOR -->
+
+    <div class="panel">
+
+        <h2>Trabajo de lecturas</h2>
+
+        <p>
+            Desde aquí puedes acceder a los periodos de lectura
+            y registrar las lecturas de los medidores.
+        </p>
+
+        <div class="acciones-dashboard">
+
+            <a href="{% url 'lista_periodos' %}" class="btn-dashboard">
+                📖 Ver periodos
+            </a>
+
+        </div>
+
+    </div>
+
+
+    {% endif %}
+
+
+    <!-- ===================================================== -->
+    <!-- INFORMACIÓN DEL USUARIO -->
+    <!-- ===================================================== -->
+
+    <div class="panel usuario-panel">
+
+        <h2>Sesión actual</h2>
+
+        <p>
+            <strong>Usuario:</strong>
+            {{ usuario.nombre_usuario }}
+        </p>
+
+        <p>
+            <strong>Nombre:</strong>
+            {{ usuario.nombre_completo }}
+        </p>
+
+        <p>
+            <strong>Correo:</strong>
+            {{ usuario.correo|default:"No registrado" }}
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- ESTILOS DEL DASHBOARD -->
+<!-- ========================================================= -->
+
+{% endblock %}

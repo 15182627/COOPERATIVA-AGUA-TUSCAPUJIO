@@ -1,0 +1,225 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+Editar socio - Cooperativa de Agua
+{% endblock %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <div class="pagina-header">
+
+        <div>
+
+            <h1>Editar socio</h1>
+
+            <p class="subtitulo">
+                Modificar información del socio
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="formulario-contenedor">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <div class="form-grid">
+
+                <div class="campo">
+
+                    <label>
+                        Número de socio *
+                    </label>
+
+                    <input
+                        type="text"
+                        name="numero_socio"
+                        value="{{ socio.numero_socio }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        CI
+                    </label>
+
+                    <input
+                        type="text"
+                        name="ci"
+                        value="{{ socio.ci|default:'' }}"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Nombres *
+                    </label>
+
+                    <input
+                        type="text"
+                        name="nombres"
+                        value="{{ socio.nombres }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Apellidos *
+                    </label>
+
+                    <input
+                        type="text"
+                        name="apellidos"
+                        value="{{ socio.apellidos }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo campo-completo">
+
+                    <label>
+                        Dirección
+                    </label>
+
+                    <input
+                        type="text"
+                        name="direccion"
+                        value="{{ socio.direccion|default:'' }}"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Teléfono
+                    </label>
+
+                    <input
+                        type="text"
+                        name="telefono"
+                        value="{{ socio.telefono|default:'' }}"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Correo electrónico
+                    </label>
+
+                    <input
+                        type="email"
+                        name="correo"
+                        value="{{ socio.correo|default:'' }}"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Fecha de afiliación
+                    </label>
+
+                    <input
+                        type="date"
+                        name="fecha_afiliacion"
+                        value="{{ socio.fecha_afiliacion|date:'Y-m-d' }}"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Estado
+                    </label>
+
+                    <select name="estado">
+
+                        <option
+                            value="ACTIVO"
+                            {% if socio.estado == "ACTIVO" %}selected{% endif %}
+                        >
+                            ACTIVO
+                        </option>
+
+                        <option
+                            value="INACTIVO"
+                            {% if socio.estado == "INACTIVO" %}selected{% endif %}
+                        >
+                            INACTIVO
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="campo campo-completo">
+
+                    <label>
+                        Observación
+                    </label>
+
+                    <textarea
+                        name="observacion"
+                        rows="4"
+                    >{{ socio.observacion|default:'' }}</textarea>
+
+                </div>
+
+            </div>
+
+
+            <div class="formulario-acciones">
+
+                <a
+                    href="{% url 'ver_socio' socio.id_socio %}"
+                    class="btn-accion"
+                >
+                    Cancelar
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn-principal"
+                >
+                    Guardar cambios
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

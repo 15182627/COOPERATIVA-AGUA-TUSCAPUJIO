@@ -1,0 +1,57 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <h1>Informe de caja</h1>
+
+    <table class="tabla-socios">
+
+        <thead>
+
+            <tr>
+                <th>ID</th>
+                <th>Fecha apertura</th>
+                <th>Estado</th>
+                <th>Saldo inicial</th>
+                <th>Ingresos</th>
+                <th>Egresos</th>
+                <th>Saldo calculado</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for caja in cajas %}
+
+        <tr>
+
+            <td>{{ caja.id_caja }}</td>
+
+            <td>
+                {{ caja.fecha_apertura|date:"d/m/Y H:i" }}
+            </td>
+
+            <td>{{ caja.estado }}</td>
+
+            <td>{{ caja.saldo_inicial }}</td>
+
+            <td>{{ caja.total_ingresos }}</td>
+
+            <td>{{ caja.total_egresos }}</td>
+
+            <td>{{ caja.saldo_calculado }}</td>
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

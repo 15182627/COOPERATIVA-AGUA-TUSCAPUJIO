@@ -1,0 +1,57 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="pagina">
+
+    <h1>Informes</h1>
+
+    <div>
+
+        <p>
+            Socios activos:
+            <strong>{{ total_socios }}</strong>
+        </p>
+
+        <p>
+            Consumos:
+            <strong>{{ total_consumos }}</strong>
+        </p>
+
+        <p>
+            Deudas:
+            <strong>{{ total_deudas }}</strong>
+        </p>
+
+        <p>
+            Cajas:
+            <strong>{{ total_cajas }}</strong>
+        </p>
+
+    </div>
+
+    <hr>
+
+    <h2>Reportes</h2>
+
+    <p>
+        <a href="{% url 'informe_cobranza' %}">
+            Informe de cobranza
+        </a>
+    </p>
+
+    <p>
+        <a href="{% url 'informe_consumos' %}">
+            Informe de consumos
+        </a>
+    </p>
+
+    <p>
+        <a href="{% url 'informe_caja' %}">
+            Informe de caja
+        </a>
+    </p>
+
+</div>
+
+{% endblock %}
