@@ -132,11 +132,19 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 
-# Email
-# https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
-
+# Email Configuration
 MAILERS = {
     'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+        'BACKEND': os.environ.get(
+            'EMAIL_BACKEND', 
+            'django.core.mail.backends.console.EmailBackend'
+        ),
+        'HOST': os.environ.get('EMAIL_HOST', 'localhost'),
+        'PORT': int(os.environ.get('EMAIL_PORT', 25)),
+        'HOST_USER': os.environ.get('EMAIL_HOST_USER', ''),
+        'HOST_PASSWORD': os.environ.get('EMAIL_HOST_PASSWORD', ''),
+        'USE_TLS': os.environ.get('EMAIL_USE_TLS', 'false').lower() in {'1', 'true', 'yes'},
     },
 }
+
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
