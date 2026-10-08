@@ -644,10 +644,12 @@ td form { margin: 0; display: inline; }
     place-items: center;
     overflow: hidden;
     padding: 24px 16px;
-    background: radial-gradient(circle at 30% 20%, var(--azul-800), var(--azul-950) 70%);
+    background:
+        radial-gradient(ellipse at 75% 82%, rgba(23, 184, 176, 0.22), transparent 42%),
+        radial-gradient(circle at 30% 20%, var(--azul-800), var(--azul-950) 70%);
 }
 #fondo-3d-login { position: absolute; inset: 0; z-index: 0; }
-#fondo-3d-login canvas { display: block; }
+#fondo-3d-login canvas { display: block; width: 100%; height: 100%; pointer-events: none; }
 
 .tarjeta-login {
     position: relative;
@@ -656,7 +658,10 @@ td form { margin: 0; display: inline; }
     max-width: 410px;
     padding: 36px 32px;
     border-radius: var(--radio-lg);
-    background: rgba(255, 255, 255, 0.97);
+    border: 1px solid rgba(255, 255, 255, 0.58);
+    background: rgba(255, 255, 255, 0.9);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
     box-shadow: var(--sombra-flotante);
 }
 .logo-login { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-bottom: 24px; text-align: center; }

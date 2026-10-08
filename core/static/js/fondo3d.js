@@ -1,7 +1,4 @@
-/* Fondo decorativo del login: una gota de agua que respira, rodeada de
-   gotitas en órbita. Es solo adorno: si three.js no carga o el navegador no
-   soporta WebGL, se queda el degradado azul de fondo y el login funciona igual.
-   Requiere three.js r128 (global THREE). */
+/* Escena 3D decorativa para el acceso: una gota cae y genera ondas en el agua. */
 (function () {
     "use strict";
 
@@ -13,120 +10,169 @@
 
     try {
         renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    } catch (e) {
+    } catch (error) {
         return;
     }
 
     var reducirMovimiento = window.matchMedia &&
         window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
     var escena = new THREE.Scene();
-    var camara = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-    camara.position.set(0, 0, 7);
+    var camara = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+    var alturaAgua = -1.45;
+    var duracionCaida = 1.25;
+    var duracionCiclo = 5.2;
+    var impactoX = 2.25;
 
+    camara.position.set(0, 2.25, 9);
+    camara.lookAt(0, -0.75, 0);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setClearColor(0x000000, 0);
+    if (THREE.sRGBEncoding) renderer.outputEncoding = THREE.sRGBEncoding;
     contenedor.appendChild(renderer.domElement);
 
-    /* luces: una fría y una turquesa para que el agua tenga reflejos */
-    escena.add(new THREE.AmbientLight(0x1b6fa3, 0.7));
+    escena.add(new THREE.AmbientLight(0x8be9e2, 0.72));
 
-    var luzPrincipal = new THREE.PointLight(0x3fd6cd, 3.2, 20);
-    luzPrincipal.position.set(4, 4, 5);
+    var luzPrincipal = new THREE.PointLight(0x7be5ef, 3.4, 24);
+    luzPrincipal.position.set(3, 5, 5);
     escena.add(luzPrincipal);
 
-    var luzSecundaria = new THREE.PointLight(0x8be9e2, 2, 20);
-    luzSecundaria.position.set(-4, -2, 4);
-    escena.add(luzSecundaria);
+    var luzRelleno = new THREE.PointLight(0x1b6fa3, 3, 26);
+    luzRelleno.position.set(-5, 1, 3);
+    escena.add(luzRelleno);
 
-    /* gota principal */
-    var geometria = new THREE.IcosahedronGeometry(1.8, 6);
-    var material = new THREE.MeshPhysicalMaterial({
-        color: 0x1b8fb5,
-        roughness: 0.08,
-        metalness: 0.1,
+    var geometriaAgua = new THREE.PlaneGeometry(24, 18, 96, 72);
+    geometriaAgua.rotateX(-Math.PI / 2);
+    var posicionesAgua = geometriaAgua.attributes.position;
+    var posicionesOriginales = Float32Array.from(posicionesAgua.array);
+    var materialAgua = new THREE.MeshPhysicalMaterial({
+        color: 0x0a3855,
+        roughness: 0.2,
+        metalness: 0.24,
         clearcoat: 1,
-        clearcoatRoughness: 0.1,
+        clearcoatRoughness: 0.16,
         transparent: true,
-        opacity: 0.78
+        opacity: 0.82,
+        side: THREE.DoubleSide
     });
-    var gota = new THREE.Mesh(geometria, material);
+    var agua = new THREE.Mesh(geometriaAgua, materialAgua);
+    agua.position.y = alturaAgua;
+    escena.add(agua);
+
+    var puntosGota = [
+        new THREE.Vector2(0, -0.48),
+        new THREE.Vector2(0.13, -0.4),
+        new THREE.Vector2(0.24, -0.2),
+        new THREE.Vector2(0.29, 0.02),
+        new THREE.Vector2(0.24, 0.25),
+        new THREE.Vector2(0.14, 0.48),
+        new THREE.Vector2(0.06, 0.67),
+        new THREE.Vector2(0, 0.82)
+    ];
+    var geometriaGota = new THREE.LatheGeometry(puntosGota, 40);
+    var gota = new THREE.Mesh(
+        geometriaGota,
+        new THREE.MeshPhysicalMaterial({
+            color: 0x7ddde9,
+            roughness: 0.06,
+            metalness: 0.08,
+            clearcoat: 1,
+            clearcoatRoughness: 0.04,
+            transparent: true,
+            opacity: 0.92
+        })
+    );
     escena.add(gota);
 
-    var posiciones = geometria.attributes.position;
-    var normales = geometria.attributes.normal;
-    var originales = Float32Array.from(posiciones.array);
-
-    /* gotitas en órbita */
-    var cantidad = 60;
-    var particulas = new THREE.InstancedMesh(
-        new THREE.SphereGeometry(0.045, 8, 8),
-        new THREE.MeshStandardMaterial({ color: 0x8be9e2, emissive: 0x1b6fa3, emissiveIntensity: 0.4, roughness: 0.3 }),
-        cantidad
-    );
-    var datos = [];
-    var auxiliar = new THREE.Object3D();
-    for (var i = 0; i < cantidad; i++) {
-        datos.push({
-            radio: 2.6 + Math.random() * 2.2,
-            angulo: Math.random() * Math.PI * 2,
-            velocidad: 0.1 + Math.random() * 0.25,
-            alturaY: (Math.random() - 0.5) * 5
-        });
+    var materialOndas = new THREE.MeshBasicMaterial({
+        color: 0x8be9e2,
+        transparent: true,
+        opacity: 0.56,
+        side: THREE.DoubleSide
+    });
+    var ondas = [];
+    for (var i = 0; i < 3; i++) {
+        var onda = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.012, 8, 72), materialOndas.clone());
+        onda.rotation.x = -Math.PI / 2;
+        onda.position.y = alturaAgua + 0.025 + i * 0.008;
+        onda.visible = false;
+        ondas.push(onda);
+        escena.add(onda);
     }
-    escena.add(particulas);
 
-    var tiempo = 0;
+    var inicio = null;
     var activo = true;
     var cuadro = 0;
+    var geometriaLista = false;
 
     function ajustar() {
         var ancho = contenedor.clientWidth || window.innerWidth;
         var alto = contenedor.clientHeight || window.innerHeight;
         camara.aspect = ancho / alto;
-        /* en pantallas angostas la gota se aleja para no tapar el formulario */
-        camara.position.z = ancho < 600 ? 9.5 : 7;
+        camara.position.z = ancho < 600 ? 10.5 : 9;
         camara.updateProjectionMatrix();
+        impactoX = ancho < 600 ? 2.1 : 2.25;
         renderer.setSize(ancho, alto);
+        if (reducirMovimiento) {
+            dibujar(duracionCaida + 0.5);
+        } else if (!geometriaLista) {
+            dibujar(0);
+            geometriaLista = true;
+        }
     }
 
-    function dibujar() {
-        var n = posiciones.count;
-        for (var k = 0; k < n; k++) {
-            var ix = k * 3;
-            var x0 = originales[ix], y0 = originales[ix + 1], z0 = originales[ix + 2];
-            var onda = 1 + Math.sin(x0 * 2.2 + tiempo * 1.6) * 0.05 + Math.cos(y0 * 2.6 + tiempo * 1.3) * 0.05;
-            posiciones.setXYZ(k, x0 * onda, y0 * onda, z0 * onda);
+    function dibujar(tiempo) {
+        var fase = tiempo % duracionCiclo;
+        var edadOnda = fase - duracionCaida;
+        var enCaida = fase < duracionCaida;
 
-            /* en una esfera la normal es la posición normalizada: queda suave y es barato */
-            var largo = Math.sqrt(x0 * x0 + y0 * y0 + z0 * z0) || 1;
-            normales.setXYZ(k, x0 / largo, y0 / largo, z0 / largo);
+        if (enCaida) {
+            var progreso = fase / duracionCaida;
+            gota.visible = true;
+            gota.position.set(impactoX, alturaAgua + 0.53 + (1 - progreso * progreso) * 2.75, 0);
+            gota.scale.set(1 + progreso * 0.1, 1 - progreso * 0.16, 1 + progreso * 0.1);
+            gota.rotation.z = Math.sin(tiempo * 1.5) * 0.035;
+        } else {
+            gota.visible = false;
         }
-        posiciones.needsUpdate = true;
-        normales.needsUpdate = true;
 
-        gota.rotation.y += 0.0028;
-        gota.rotation.x = Math.sin(tiempo * 0.3) * 0.15;
+        for (var j = 0; j < posicionesAgua.count; j++) {
+            var indice = j * 3;
+            var x = posicionesOriginales[indice];
+            var z = posicionesOriginales[indice + 1];
+            var distancia = Math.sqrt((x - impactoX) * (x - impactoX) + z * z);
+            var altura = Math.sin(x * 0.8 + tiempo * 0.75) * 0.018 +
+                Math.cos(z * 0.9 - tiempo * 0.62) * 0.016;
 
-        for (var j = 0; j < cantidad; j++) {
-            var p = datos[j];
-            p.angulo += p.velocidad * 0.01;
-            auxiliar.position.set(
-                Math.cos(p.angulo) * p.radio,
-                p.alturaY + Math.sin(tiempo + j) * 0.15,
-                Math.sin(p.angulo) * p.radio
-            );
-            auxiliar.updateMatrix();
-            particulas.setMatrixAt(j, auxiliar.matrix);
+            if (edadOnda >= 0 && edadOnda < 3.8) {
+                var envolvente = Math.exp(-edadOnda * 0.72) * Math.exp(-distancia * 0.13);
+                altura += Math.sin((distancia - edadOnda * 2.65) * 7.5) *
+                    envolvente * 0.15;
+            }
+
+            posicionesAgua.setXYZ(j, x, altura, z);
         }
-        particulas.instanceMatrix.needsUpdate = true;
+        posicionesAgua.needsUpdate = true;
+        geometriaAgua.computeVertexNormals();
+
+        for (var k = 0; k < ondas.length; k++) {
+            var edadAnillo = edadOnda - k * 0.16;
+            var anillo = ondas[k];
+            anillo.visible = edadAnillo >= 0 && edadAnillo < 2.2;
+            if (anillo.visible) {
+                var crecimiento = edadAnillo / 2.2;
+                anillo.position.x = impactoX;
+                anillo.scale.setScalar(0.2 + crecimiento * 3.2);
+                anillo.material.opacity = (1 - crecimiento) * 0.56;
+            }
+        }
 
         renderer.render(escena, camara);
     }
 
-    function animar() {
+    function animar(marcaTiempo) {
         if (!activo) return;
-        tiempo += 0.006;
-        dibujar();
+        if (inicio === null) inicio = marcaTiempo;
+        dibujar((marcaTiempo - inicio) / 1000);
         cuadro = requestAnimationFrame(animar);
     }
 
@@ -134,16 +180,16 @@
     window.addEventListener("resize", ajustar);
 
     if (reducirMovimiento) {
-        dibujar();               /* un solo cuadro, sin animación */
+        geometriaLista = true;
     } else {
         animar();
-        /* no gastar batería con la pestaña en segundo plano */
         document.addEventListener("visibilitychange", function () {
             if (document.hidden) {
                 activo = false;
                 cancelAnimationFrame(cuadro);
             } else if (!activo) {
                 activo = true;
+                inicio = null;
                 animar();
             }
         });

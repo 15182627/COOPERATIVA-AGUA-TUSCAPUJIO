@@ -10,9 +10,13 @@ Sistema de gestion de socios, lecturas, cobranza y caja, construido con Django y
 
 ## Configuracion local en PowerShell
 
-Desde la carpeta del proyecto, configura las variables de entorno. Sustituye los valores de la base de datos por los de tu instalacion; no publiques contrasenas ni claves:
+Desde la carpeta del proyecto, crea tu archivo local `.env` a partir de la plantilla y sustituye los valores de la base de datos por los de tu instalacion; no publiques contrasenas ni claves:
 
-`.env.example` es solo una plantilla de referencia; Django no la carga automaticamente.
+```powershell
+Copy-Item .env.example .env
+```
+
+`python-dotenv` carga automaticamente ese archivo al iniciar Django, asi que se usan tus valores locales sin hacerlo parte del repositorio.
 
 ```powershell
 $env:DB_NAME = "cooperativa_agua"
