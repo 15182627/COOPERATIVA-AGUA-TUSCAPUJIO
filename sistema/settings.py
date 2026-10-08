@@ -32,11 +32,11 @@ if not SECRET_KEY:
         raise ImproperlyConfigured('Set DJANGO_SECRET_KEY when DEBUG is disabled.')
     SECRET_KEY = 'django-insecure-local-development-only'
 
-ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,[::1]').split(',')
-    if host.strip()
-]
+# Permitir tu dominio de Render específico y local
+ALLOWED_HOSTS = ['cooperativa-agua-tuscapujio.onrender.com', 'localhost', '127.0.0.1']
+
+# O permitir cualquier host (útil durante el desarrollo):
+# ALLOWED_HOSTS = ['*']
 
 
 # Application definition
