@@ -645,50 +645,97 @@ td form { margin: 0; display: inline; }
     overflow: hidden;
     padding: 24px 16px;
     background:
-        radial-gradient(ellipse at 75% 82%, rgba(23, 184, 176, 0.22), transparent 42%),
-        radial-gradient(circle at 30% 20%, var(--azul-800), var(--azul-950) 70%);
+        radial-gradient(ellipse at 50% 55%, #102e49 0%, #091e32 58%, #061421 100%);
 }
 #fondo-3d-login { position: absolute; inset: 0; z-index: 0; }
-#fondo-3d-login canvas { display: block; width: 100%; height: 100%; pointer-events: none; }
+#fondo-3d-login > * { position: absolute; pointer-events: none; }
+.login-esfera {
+    width: min(440px, 58vh, 62vw);
+    aspect-ratio: 1;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    background:
+        radial-gradient(ellipse at 69% 25%, rgba(102, 255, 239, 0.96) 0%, rgba(69, 211, 224, 0.88) 18%, transparent 43%),
+        radial-gradient(ellipse at 34% 73%, #47a6dc 0%, #347fc0 44%, #174c7e 76%, #0d3153 100%);
+    box-shadow:
+        inset -24px -24px 42px rgba(5, 31, 61, 0.42),
+        inset 15px 12px 34px rgba(164, 255, 248, 0.24),
+        0 0 70px rgba(48, 185, 222, 0.16);
+    transform: translate(-50%, -50%);
+    animation: login-esfera-flotar 4.5s ease-in-out infinite;
+}
+.login-esfera::after {
+    position: absolute;
+    inset: 2%;
+    border: 1px solid rgba(191, 255, 250, 0.12);
+    border-radius: inherit;
+    content: "";
+}
+.login-burbujas { inset: 0; overflow: hidden; }
+.login-burbuja {
+    position: absolute;
+    display: block;
+    border: 1px solid rgba(187, 255, 255, 0.82);
+    border-radius: 50%;
+    background: radial-gradient(circle at 33% 28%, #e9ffff 0%, #83fff6 26%, #29d5e4 68%, rgba(31, 175, 208, 0.62) 100%);
+    box-shadow: 0 0 10px rgba(73, 239, 244, 0.75), inset -2px -2px 4px rgba(15, 98, 145, 0.35);
+    animation: login-burbuja-flotar var(--duracion) ease-in-out var(--retraso) infinite;
+}
+@keyframes login-burbuja-flotar {
+    0%, 100% { translate: 0 0; }
+    50% { translate: var(--deriva-x) var(--deriva-y); }
+}
+@keyframes login-esfera-flotar {
+    0%, 100% { translate: 0 0; }
+    50% { translate: 0 -14px; }
+}
 
 .tarjeta-login {
     position: relative;
     z-index: 1;
     width: 100%;
-    max-width: 410px;
-    padding: 36px 32px;
-    border-radius: var(--radio-lg);
-    border: 1px solid rgba(255, 255, 255, 0.58);
-    background: rgba(255, 255, 255, 0.9);
+    max-width: 294px;
+    padding: 23px 22px;
+    border-radius: 17px;
+    border: 1px solid rgba(255, 255, 255, 0.86);
+    background: rgba(255, 255, 255, 0.97);
     -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
-    box-shadow: var(--sombra-flotante);
+    box-shadow: 0 18px 48px rgba(0, 11, 24, 0.28);
 }
-.logo-login { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-bottom: 24px; text-align: center; }
+.logo-login { display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 18px; text-align: center; }
 .logo-login .icono {
-    width: 58px; height: 58px;
+    width: 42px; height: 42px;
     display: grid; place-items: center;
     border-radius: 50%;
-    font-size: 27px;
-    background: linear-gradient(135deg, var(--turquesa-400), var(--azul-600));
-    box-shadow: 0 10px 22px rgba(23, 184, 176, 0.4);
+    font-size: 21px;
+    background: linear-gradient(135deg, #59d4c6, #3788a9);
+    box-shadow: 0 7px 18px rgba(23, 184, 176, 0.34);
 }
-.logo-login h1 { font-size: 1.2rem; margin-top: 6px; }
-.logo-login span { font-size: 0.82rem; color: var(--texto-secundario); }
+.logo-login h1 { font-size: 1rem; margin-top: 2px; }
+.logo-login span { font-size: 0.72rem; color: var(--texto-secundario); }
 
-.tarjeta-login label { display: block; margin: 0 0 6px; font-size: 0.82rem; font-weight: 600; color: var(--texto-secundario); }
-.tarjeta-login .grupo-campo { margin-bottom: 16px; }
+.tarjeta-login label { display: block; margin: 0 0 5px; font-size: 0.75rem; font-weight: 600; color: var(--texto-secundario); }
+.tarjeta-login .grupo-campo { margin-bottom: 12px; }
 .tarjeta-login input {
     width: 100%;
-    padding: 12px 14px;
+    padding: 9px 12px;
     border: 1.5px solid var(--borde);
-    border-radius: var(--radio-sm);
+    border-radius: 8px;
     background: var(--superficie-2);
     color: var(--texto-principal);
     transition: border-color 0.15s ease, background 0.15s ease;
 }
 .tarjeta-login input:focus { outline: none; border-color: var(--turquesa-400); background: #fff; }
-.tarjeta-login .btn-principal { width: 100%; padding: 12px; margin-top: 4px; font-size: 0.95rem; }
+.tarjeta-login .btn-principal { width: 100%; padding: 10px; margin-top: 2px; border-radius: 10px; font-size: 0.82rem; }
+@media (max-width: 480px) {
+    .login-esfera { width: min(78vw, 58vh); }
+    .tarjeta-login { max-width: 310px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .login-esfera, .login-burbuja { animation: none; }
+}
 
 /* =========================================================
    DASHBOARD: profundidad, vidrio y escena 3D de agua
@@ -890,11 +937,11 @@ body:has(.dashboard) {
     border-radius: 50%;
     background: radial-gradient(circle at 32% 26%, #fff 0%, #b8f8f0 12%, rgba(66, 194, 210, 0.64) 43%, rgba(23, 89, 130, 0.33) 75%);
     box-shadow: inset -4px -5px 9px rgba(2, 40, 68, 0.3), 0 4px 15px rgba(91, 224, 221, 0.2);
-    animation: hero-bubble-float 4s ease-in-out infinite;
+    animation: hero-bubble-float 5.2s ease-in-out infinite;
 }
-.hero-bubble-one { width: 24px; height: 24px; top: 37px; right: 49px; }
-.hero-bubble-two { width: 13px; height: 13px; top: 122px; left: 39px; animation-delay: -1.4s; }
-.hero-bubble-three { width: 17px; height: 17px; bottom: 54px; right: 27px; animation-delay: -2.2s; }
+.hero-bubble-one { width: 24px; height: 24px; top: 37px; right: 49px; animation-duration: 5.6s; }
+.hero-bubble-two { width: 13px; height: 13px; top: 122px; left: 39px; animation-delay: -1.7s; animation-duration: 4.3s; }
+.hero-bubble-three { width: 17px; height: 17px; bottom: 54px; right: 27px; animation-delay: -2.4s; animation-duration: 6s; }
 
 .dashboard > .panel {
     border: 1px solid rgba(211, 229, 233, 0.88);
@@ -954,7 +1001,7 @@ body:has(.dashboard) {
 }
 @keyframes hero-bubble-float {
     0%, 100% { translate: 0 0; }
-    50% { translate: 0 -9px; }
+    50% { translate: 8px -19px; }
 }
 
 @media (max-width: 700px) {

@@ -114,7 +114,7 @@ def login_view(request):
                 .filter(
                     nombre_usuario=nombre_usuario,
                     password=password,
-                    estado="ACTIVO"
+                    estado__iexact="ACTIVO"
                 )
                 .first()
             )

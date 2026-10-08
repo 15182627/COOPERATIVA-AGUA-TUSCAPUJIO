@@ -9,14 +9,17 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💧</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500;600&display=swap">
-    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}?v=20261008-3">
 </head>
 
 <body>
 
 <div class="pantalla-login">
 
-    <div id="fondo-3d-login" aria-hidden="true"></div>
+    <div id="fondo-3d-login" aria-hidden="true">
+        <div class="login-esfera"></div>
+        <div class="login-burbujas"></div>
+    </div>
 
     <div class="tarjeta-login">
 
@@ -69,8 +72,7 @@
 
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="{% static 'js/fondo3d.js' %}"></script>
+<script src="{% static 'js/fondo3d.js' %}?v=20261008"></script>
 
 </body>
 </html>
