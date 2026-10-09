@@ -16,7 +16,7 @@
 <body>
 
 {# El usuario llega como "usuario" en algunas vistas y como request.usuario_actual en todas las protegidas #}
-{% with u=usuario|default:request.usuario_actual %}
+{% with u=usuario|default:request.user %}
 {% with rol=u.id_rol_id %}
 
 <div class="layout">
