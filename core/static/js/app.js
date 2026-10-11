@@ -99,16 +99,18 @@
 
             var socioId = button.dataset.socioId || "";
             var deudaSeleccionada = button.dataset.deudaId || "";
-            var filas = Array.from(document.querySelectorAll(
-                ".tabla-socios tbody tr[data-socio-id]"
-            )).filter(function (fila) {
-                return fila.dataset.socioId === socioId;
-            });
+            var filaSeleccionada = button.closest("tr");
+            var cuerpoTabla = filaSeleccionada && filaSeleccionada.parentElement;
+            var filas = cuerpoTabla
+                ? Array.from(cuerpoTabla.querySelectorAll("tr[data-socio-id]"))
+                : [];
             var items = filas
                 .filter(function (fila) {
+                    return fila.dataset.socioId === socioId;
+                })
+                .filter(function (fila) {
                     var saldo = Number(fila.dataset.total);
-                    return fila.dataset.estado !== "PAGADA" &&
-                        fila.dataset.deudaId &&
+                    return fila.dataset.deudaId &&
                         Number.isFinite(saldo) &&
                         saldo > 0;
                 })
@@ -119,6 +121,17 @@
                         total: Number(fila.dataset.total),
                     };
                 });
+
+            if (!items.length && deudaSeleccionada) {
+                var saldoSeleccionado = Number(button.dataset.total);
+                if (Number.isFinite(saldoSeleccionado) && saldoSeleccionado > 0) {
+                    items.push({
+                        id: deudaSeleccionada,
+                        periodo: formatearPeriodo(button.dataset.mes || ""),
+                        total: saldoSeleccionado,
+                    });
+                }
+            }
 
             modalLista.replaceChildren();
             items.forEach(function (item) {
