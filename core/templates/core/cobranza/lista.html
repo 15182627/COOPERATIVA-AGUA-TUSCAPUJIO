@@ -52,7 +52,12 @@ Cobranza
 
                 {% for deuda in deudas %}
 
-                <tr>
+                <tr
+                    data-socio-id="{{ deuda.id_socio.id_socio }}"
+                    data-mes="{{ deuda.id_periodo.mes }}/{{ deuda.id_periodo.gestion }}"
+                    data-total="{{ deuda.total }}"
+                    data-estado="{{ deuda.estado }}"
+                >
 
                     <td>
                         {{ deuda.id_socio.numero_socio }}
@@ -124,9 +129,15 @@ Cobranza
 
                             {% else %}
 
-                                <a href="{% url 'detalle_cobranza' deuda.id_deuda %}">
+                                <button
+                                    type="button"
+                                    class="btn-cobrar"
+                                    data-cobrar-modal
+                                    data-socio-id="{{ deuda.id_socio.id_socio }}"
+                                    data-total="{{ deuda.total }}"
+                                >
                                     Cobrar
-                                </a>
+                                </button>
 
                             {% endif %}
 
@@ -143,9 +154,15 @@ Cobranza
 
                             {% else %}
 
-                                <a href="{% url 'detalle_cobranza' deuda.id_deuda %}">
+                                <button
+                                    type="button"
+                                    class="btn-cobrar"
+                                    data-cobrar-modal
+                                    data-socio-id="{{ deuda.id_socio.id_socio }}"
+                                    data-total="{{ deuda.total }}"
+                                >
                                     Cobrar
-                                </a>
+                                </button>
 
                             {% endif %}
 
@@ -187,6 +204,52 @@ Cobranza
 
         </table>
 
+    </div>
+
+    <div class="modal-cobranza" id="modalCobranza" aria-hidden="true">
+        <div class="modal-cobranza__panel" role="dialog" aria-modal="true" aria-labelledby="modalCobranzaTitulo">
+            <button type="button" class="modal-cobranza__cerrar" id="modalCobranzaCerrar" aria-label="Cerrar">×</button>
+
+            <div class="modal-cobranza__header">
+                <div class="modal-cobranza__logo" aria-hidden="true">MSC</div>
+                <h3 id="modalCobranzaTitulo">Cobrar deuda</h3>
+            </div>
+
+            <div class="modal-cobranza__contenido">
+                <div class="modal-cobranza__lista" id="modalCobranzaLista"></div>
+
+                <div class="modal-cobranza__total">
+                    <span>Total a cobrar</span>
+                    <strong id="modalCobranzaTotal">Bs 0.00</strong>
+                </div>
+
+                <label class="modal-cobranza__label" for="modalMetodoPago">Método de pago</label>
+                <select id="modalMetodoPago" class="modal-cobranza__select">
+                    <option value="QR">QR (transferencia)</option>
+                    <option value="TRANSFERENCIA">TRANSFERENCIA</option>
+                    <option value="EFECTIVO">EFECTIVO</option>
+                </select>
+
+                <div class="modal-cobranza__qr-wrap">
+                    <img
+                        id="modalCobranzaQr"
+                        alt="Código QR genérico de demostración, no válido para pagos"
+                        src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&amp;data=QR%20DE%20DEMOSTRACION%20-%20MONTO%200.00%20-%20NO%20VALIDO%20PARA%20PAGOS"
+                    >
+                </div>
+
+                <div class="modal-cobranza__info">
+                    <strong>QR genérico de demostración</strong>
+                    <span>No corresponde a una cuenta bancaria.</span>
+                    <small>No escanear para realizar pagos.</small>
+                </div>
+
+                <div class="modal-cobranza__acciones">
+                    <button type="button" class="btn-cancelar" id="modalCobranzaCancelar">Cancelar</button>
+                    <button type="button" class="btn-confirmar">Confirmar pago</button>
+                </div>
+            </div>
+        </div>
     </div>
 
 </div>

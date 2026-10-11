@@ -62,4 +62,86 @@
         var texto = document.title.split(" - ")[0].trim();
         if (texto) titulo.textContent = texto;
     }
+
+    /* ---------- modal de cobranza ---------- */
+    var modalCobranza = document.getElementById("modalCobranza");
+    if (modalCobranza) {
+        var modalLista = document.getElementById("modalCobranzaLista");
+        var modalTotal = document.getElementById("modalCobranzaTotal");
+        var modalCerrar = document.getElementById("modalCobranzaCerrar");
+        var modalCancelar = document.getElementById("modalCobranzaCancelar");
+
+        function cerrarCobranza() {
+            modalCobranza.classList.remove("activo");
+            modalCobranza.setAttribute("aria-hidden", "true");
+        }
+
+        function abrirCobranza(button) {
+            if (!button) return;
+
+            var socioId = button.dataset.socioId || "";
+            var filas = Array.from(document.querySelectorAll("[data-socio-id='" + socioId + "']"));
+            var items = filas
+                .filter(function (fila) {
+                    return fila.dataset.estado !== "PAGADA" &&
+                        fila.dataset.total &&
+                        Number(fila.dataset.total) > 0;
+                })
+                .map(function (fila) {
+                    return {
+                        periodo: fila.dataset.mes || "",
+                        total: Number(fila.dataset.total || 0),
+                    };
+                });
+
+            if (!items.length) {
+                items = [{ periodo: "-", total: Number(button.dataset.total || 0) }];
+            }
+
+            var totalGeneral = items.reduce(function (acc, item) {
+                return acc + item.total;
+            }, 0);
+
+            var html = items.map(function (item) {
+                return '<div class="modal-cobranza__item">' +
+                    '<label><input type="checkbox" checked disabled></label>' +
+                    '<span class="modal-cobranza__item-text">' + item.periodo + '</span>' +
+                    '<strong>Bs ' + Number(item.total).toFixed(2) + '</strong>' +
+                    '</div>';
+            }).join("");
+
+            modalLista.innerHTML = html;
+            modalTotal.textContent = "Bs " + totalGeneral.toFixed(2);
+            modalCobranza.setAttribute("aria-hidden", "false");
+            modalCobranza.classList.add("activo");
+
+        }
+
+        document.addEventListener("click", function (event) {
+            var botonPago = event.target.closest("[data-cobrar-modal]");
+            if (botonPago) {
+                abrirCobranza(botonPago);
+            }
+        });
+
+        if (modalCerrar) {
+            modalCerrar.addEventListener("click", cerrarCobranza);
+        }
+
+        if (modalCancelar) {
+            modalCancelar.addEventListener("click", cerrarCobranza);
+        }
+
+        modalCobranza.addEventListener("click", function (event) {
+            if (event.target === modalCobranza) {
+                cerrarCobranza();
+            }
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape" && modalCobranza.classList.contains("activo")) {
+                cerrarCobranza();
+            }
+        });
+    }
 })();
