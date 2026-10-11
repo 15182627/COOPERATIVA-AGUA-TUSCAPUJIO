@@ -1132,6 +1132,11 @@ body:has(.dashboard) {
     padding: 16px 16px 8px;
 }
 
+.modal-cobranza__instruccion {
+    margin: 0 0 10px;
+    color: var(--texto-secundario);
+}
+
 .modal-cobranza__lista {
     display: flex;
     flex-direction: column;
@@ -1143,7 +1148,7 @@ body:has(.dashboard) {
 
 .modal-cobranza__item {
     display: grid;
-    grid-template-columns: 26px minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     gap: 12px;
     padding: 8px 0;
@@ -1152,9 +1157,18 @@ body:has(.dashboard) {
     font-size: 0.96rem;
 }
 
+.modal-cobranza__item-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    cursor: pointer;
+}
+
 .modal-cobranza__item input {
     width: 16px;
     height: 16px;
+    flex: 0 0 auto;
     accent-color: #18b6b0;
 }
 
@@ -1201,48 +1215,6 @@ body:has(.dashboard) {
     margin-bottom: 18px;
 }
 
-.modal-cobranza__qr-wrap {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 18px 12px 12px;
-    border: 2px dashed rgba(21, 145, 156, 0.42);
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.6);
-    margin-bottom: 18px;
-}
-
-.modal-cobranza__qr-wrap img {
-    display: block;
-    width: min(100%, 220px);
-    height: auto;
-    background: #fff;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 8px 18px rgba(7, 42, 61, 0.08);
-}
-
-.modal-cobranza__info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 4px;
-    color: #10384d;
-    margin-bottom: 18px;
-}
-
-.modal-cobranza__info strong {
-    font-size: clamp(1.1rem, 1.8vw, 1.4rem);
-    color: #1f3d3d;
-}
-
-.modal-cobranza__info span,
-.modal-cobranza__info small {
-    color: var(--texto-secundario);
-    font-size: 0.9rem;
-}
-
 .modal-cobranza__acciones {
     display: flex;
     justify-content: flex-end;
@@ -1270,6 +1242,11 @@ body:has(.dashboard) {
     border-color: transparent;
 }
 
+.btn-confirmar:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
 @media (max-width: 640px) {
     .modal-cobranza__panel {
         padding: 16px 12px 12px;
@@ -1285,7 +1262,10 @@ body:has(.dashboard) {
     }
 
     .modal-cobranza__item {
-        grid-template-columns: 22px minmax(0, 1fr) auto;
+        gap: 8px;
+    }
+
+    .modal-cobranza__item-label {
         gap: 8px;
     }
 

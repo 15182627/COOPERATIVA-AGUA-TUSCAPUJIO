@@ -23,6 +23,7 @@ from .views import (
     lista_deudas,
     generar_deudas,
     lista_cobranza,
+    registrar_cobro_multiple,
     detalle_cobranza,
     
     
@@ -243,6 +244,12 @@ urlpatterns = [
         "cobranza/",
         lista_cobranza,
         name="lista_cobranza"
+    ),
+
+    path(
+        "cobranza/registrar-multiple/",
+        registrar_cobro_multiple,
+        name="registrar_cobro_multiple"
     ),
 
     path(

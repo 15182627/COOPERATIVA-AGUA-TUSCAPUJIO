@@ -1,5 +1,6 @@
 #views.py
 import csv
+from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q, Sum
@@ -1283,6 +1284,27 @@ def lista_cobranza(request):
             estado=estado
         )
 
+    deudas = list(deudas)
+    pagos_por_deuda = {
+        pago["id_deuda"]: pago["total_pagado"]
+        for pago in (
+            Pagos.objects
+            .filter(id_deuda__in=[deuda.id_deuda for deuda in deudas])
+            .values("id_deuda")
+            .annotate(total_pagado=Sum("importe"))
+        )
+    }
+
+    for deuda in deudas:
+        total_pagado = pagos_por_deuda.get(
+            deuda.id_deuda,
+            Decimal("0.00")
+        )
+        deuda.saldo_pendiente = max(
+            deuda.total - total_pagado,
+            Decimal("0.00")
+        )
+
     return render(
         request,
         "core/cobranza/lista.html",
@@ -1293,6 +1315,124 @@ def lista_cobranza(request):
             "estado_seleccionado": estado,
         }
     )
+
+
+@requiere_login
+@requiere_rol([ROL_ADMIN, ROL_CAJERO])
+def registrar_cobro_multiple(request):
+    if request.method != "POST":
+        return redirect("lista_cobranza")
+
+    ids_deuda = request.POST.getlist("deudas")
+    metodo_pago = request.POST.get("metodo_pago", "").strip()
+
+    if not ids_deuda or metodo_pago not in {"EFECTIVO", "QR"}:
+        messages.error(
+            request,
+            "Selecciona al menos un mes pendiente y un método de pago válido."
+        )
+        return redirect("lista_cobranza")
+
+    try:
+        ids_deuda = list({int(id_deuda) for id_deuda in ids_deuda})
+    except (TypeError, ValueError):
+        messages.error(request, "La selección de deudas no es válida.")
+        return redirect("lista_cobranza")
+
+    with transaction.atomic():
+        caja = (
+            Cajas.objects
+            .select_for_update()
+            .filter(estado="ABIERTA")
+            .order_by("-id_caja")
+            .first()
+        )
+
+        if not caja:
+            messages.error(
+                request,
+                "Debe abrir una caja antes de registrar el pago."
+            )
+            return redirect("lista_cobranza")
+
+        deudas_seleccionadas = list(
+            Deudas.objects
+            .select_for_update()
+            .select_related("id_socio", "id_periodo")
+            .filter(id_deuda__in=ids_deuda)
+            .order_by("id_deuda")
+        )
+
+        if len(deudas_seleccionadas) != len(ids_deuda):
+            messages.error(request, "Una o más deudas seleccionadas ya no existen.")
+            return redirect("lista_cobranza")
+
+        if len({deuda.id_socio_id for deuda in deudas_seleccionadas}) != 1:
+            messages.error(
+                request,
+                "Solo se pueden cobrar meses de un mismo socio por operación."
+            )
+            return redirect("lista_cobranza")
+
+        cobros = []
+        fecha_pago = timezone.now()
+
+        for deuda in deudas_seleccionadas:
+            total_pagado = (
+                Pagos.objects
+                .filter(id_deuda=deuda)
+                .aggregate(total=Sum("importe"))["total"]
+                or Decimal("0.00")
+            )
+            saldo_pendiente = max(
+                deuda.total - total_pagado,
+                Decimal("0.00")
+            )
+
+            if saldo_pendiente <= 0:
+                messages.error(
+                    request,
+                    "Uno de los meses seleccionados ya está pagado. "
+                    "Actualiza la página y vuelve a seleccionar."
+                )
+                return redirect("lista_cobranza")
+
+            cobros.append((deuda, saldo_pendiente))
+
+        usuario = request.usuario_actual
+
+        for deuda, importe in cobros:
+            pago = Pagos.objects.create(
+                id_deuda=deuda,
+                id_usuario=usuario,
+                id_caja=caja,
+                fecha_pago=fecha_pago,
+                importe=importe,
+                metodo_pago=metodo_pago,
+            )
+
+            MovimientosCaja.objects.create(
+                id_caja=caja,
+                id_pago=pago,
+                id_usuario=usuario,
+                fecha_movimiento=fecha_pago,
+                tipo="INGRESO",
+                concepto=(
+                    f"Pago deuda #{deuda.id_deuda} - "
+                    f"{deuda.id_socio.numero_socio}"
+                ),
+                importe=importe,
+            )
+
+            deuda.estado = "PAGADA"
+            deuda.save(update_fields=["estado"])
+
+    messages.success(
+        request,
+        f"Pago registrado correctamente para {len(cobros)} "
+        f"{'mes' if len(cobros) == 1 else 'meses'}."
+    )
+    return redirect("lista_cobranza")
 
 
 # =========================================================

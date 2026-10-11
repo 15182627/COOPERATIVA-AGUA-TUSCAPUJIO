@@ -25,6 +25,13 @@ Cobranza
 
     </div>
 
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{% if message.tags == 'error' %}error{% else %}ok{% endif %}" role="status">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
 
     <div class="tabla-contenedor">
 
@@ -54,8 +61,9 @@ Cobranza
 
                 <tr
                     data-socio-id="{{ deuda.id_socio.id_socio }}"
+                    data-deuda-id="{{ deuda.id_deuda }}"
                     data-mes="{{ deuda.id_periodo.mes }}/{{ deuda.id_periodo.gestion }}"
-                    data-total="{{ deuda.total }}"
+                    data-total="{{ deuda.saldo_pendiente }}"
                     data-estado="{{ deuda.estado }}"
                 >
 
@@ -87,14 +95,14 @@ Cobranza
 
                     <td>
                         <strong>
-                            Bs {{ deuda.total }}
+                            Bs {{ deuda.saldo_pendiente|floatformat:2 }}
                         </strong>
                     </td>
 
 
                     <td>
 
-                        {% if deuda.estado == "PAGADA" %}
+                        {% if deuda.estado == "PAGADA" or deuda.saldo_pendiente <= 0 %}
 
                             <span class="estado activo">
                                 PAGADA
@@ -121,7 +129,7 @@ Cobranza
 
                             <!-- ADMIN -->
 
-                            {% if deuda.estado == "PAGADA" %}
+                            {% if deuda.estado == "PAGADA" or deuda.saldo_pendiente <= 0 %}
 
                                 <a href="{% url 'detalle_cobranza' deuda.id_deuda %}">
                                     Ver pago
@@ -134,7 +142,8 @@ Cobranza
                                     class="btn-cobrar"
                                     data-cobrar-modal
                                     data-socio-id="{{ deuda.id_socio.id_socio }}"
-                                    data-total="{{ deuda.total }}"
+                                    data-deuda-id="{{ deuda.id_deuda }}"
+                                    data-total="{{ deuda.saldo_pendiente }}"
                                 >
                                     Cobrar
                                 </button>
@@ -146,7 +155,7 @@ Cobranza
 
                             <!-- CAJERO -->
 
-                            {% if deuda.estado == "PAGADA" %}
+                            {% if deuda.estado == "PAGADA" or deuda.saldo_pendiente <= 0 %}
 
                                 <a href="{% url 'detalle_cobranza' deuda.id_deuda %}">
                                     Ver pago
@@ -159,7 +168,8 @@ Cobranza
                                     class="btn-cobrar"
                                     data-cobrar-modal
                                     data-socio-id="{{ deuda.id_socio.id_socio }}"
-                                    data-total="{{ deuda.total }}"
+                                    data-deuda-id="{{ deuda.id_deuda }}"
+                                    data-total="{{ deuda.saldo_pendiente }}"
                                 >
                                     Cobrar
                                 </button>
@@ -212,43 +222,43 @@ Cobranza
 
             <div class="modal-cobranza__header">
                 <div class="modal-cobranza__logo" aria-hidden="true">MSC</div>
-                <h3 id="modalCobranzaTitulo">Cobrar deuda</h3>
+                <h3 id="modalCobranzaTitulo">Registrar cobro</h3>
             </div>
 
-            <div class="modal-cobranza__contenido">
-                <div class="modal-cobranza__lista" id="modalCobranzaLista"></div>
+            <form
+                method="post"
+                action="{% url 'registrar_cobro_multiple' %}"
+                id="formCobranzaMultiple"
+            >
+                {% csrf_token %}
+                <div class="modal-cobranza__contenido">
+                    <p class="modal-cobranza__instruccion">
+                        Selecciona los meses adeudados que pagará el socio.
+                    </p>
+                    <div class="modal-cobranza__lista" id="modalCobranzaLista"></div>
 
-                <div class="modal-cobranza__total">
-                    <span>Total a cobrar</span>
-                    <strong id="modalCobranzaTotal">Bs 0.00</strong>
-                </div>
+                    <div class="modal-cobranza__total">
+                        <span>Total a cobrar</span>
+                        <strong id="modalCobranzaTotal">Bs 0.00</strong>
+                    </div>
 
-                <label class="modal-cobranza__label" for="modalMetodoPago">Método de pago</label>
-                <select id="modalMetodoPago" class="modal-cobranza__select">
-                    <option value="QR">QR (transferencia)</option>
-                    <option value="TRANSFERENCIA">TRANSFERENCIA</option>
-                    <option value="EFECTIVO">EFECTIVO</option>
-                </select>
-
-                <div class="modal-cobranza__qr-wrap">
-                    <img
-                        id="modalCobranzaQr"
-                        alt="Código QR genérico de demostración, no válido para pagos"
-                        src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&amp;data=QR%20DE%20DEMOSTRACION%20-%20MONTO%200.00%20-%20NO%20VALIDO%20PARA%20PAGOS"
+                    <label class="modal-cobranza__label" for="modalMetodoPago">Método de pago</label>
+                    <select
+                        id="modalMetodoPago"
+                        name="metodo_pago"
+                        class="modal-cobranza__select"
+                        required
                     >
-                </div>
+                        <option value="EFECTIVO">EFECTIVO</option>
+                        <option value="QR">QR</option>
+                    </select>
 
-                <div class="modal-cobranza__info">
-                    <strong>QR genérico de demostración</strong>
-                    <span>No corresponde a una cuenta bancaria.</span>
-                    <small>No escanear para realizar pagos.</small>
+                    <div class="modal-cobranza__acciones">
+                        <button type="button" class="btn-cancelar" id="modalCobranzaCancelar">Cancelar</button>
+                        <button type="submit" class="btn-confirmar" id="modalCobranzaConfirmar" disabled>Confirmar cobro</button>
+                    </div>
                 </div>
-
-                <div class="modal-cobranza__acciones">
-                    <button type="button" class="btn-cancelar" id="modalCobranzaCancelar">Cancelar</button>
-                    <button type="button" class="btn-confirmar">Confirmar pago</button>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 
