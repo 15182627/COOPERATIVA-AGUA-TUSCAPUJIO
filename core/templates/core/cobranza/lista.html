@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+{% load l10n static %}
 
 {% block title %}
 Cobranza
@@ -63,7 +64,7 @@ Cobranza
                     data-socio-id="{{ deuda.id_socio.id_socio }}"
                     data-deuda-id="{{ deuda.id_deuda }}"
                     data-mes="{{ deuda.id_periodo.mes }}/{{ deuda.id_periodo.gestion }}"
-                    data-total="{{ deuda.saldo_pendiente }}"
+                    data-total="{{ deuda.saldo_pendiente|unlocalize }}"
                     data-estado="{{ deuda.estado }}"
                 >
 
@@ -144,7 +145,7 @@ Cobranza
                                     data-socio-id="{{ deuda.id_socio.id_socio }}"
                                     data-deuda-id="{{ deuda.id_deuda }}"
                                     data-mes="{{ deuda.id_periodo.mes }}/{{ deuda.id_periodo.gestion }}"
-                                    data-total="{{ deuda.saldo_pendiente }}"
+                                    data-total="{{ deuda.saldo_pendiente|unlocalize }}"
                                 >
                                     Cobrar
                                 </button>
@@ -171,7 +172,7 @@ Cobranza
                                     data-socio-id="{{ deuda.id_socio.id_socio }}"
                                     data-deuda-id="{{ deuda.id_deuda }}"
                                     data-mes="{{ deuda.id_periodo.mes }}/{{ deuda.id_periodo.gestion }}"
-                                    data-total="{{ deuda.saldo_pendiente }}"
+                                    data-total="{{ deuda.saldo_pendiente|unlocalize }}"
                                 >
                                     Cobrar
                                 </button>
@@ -249,11 +250,17 @@ Cobranza
                         id="modalMetodoPago"
                         name="metodo_pago"
                         class="modal-cobranza__select"
+                        data-qr-method
                         required
                     >
                         <option value="EFECTIVO">EFECTIVO</option>
                         <option value="QR">QR</option>
                     </select>
+
+                    <div class="qr-pago-panel" data-qr-payment-details hidden>
+                        <p>Escanea este código QR para realizar el pago.</p>
+                        <img src="{% static 'img/qr-pago.png' %}" alt="Código QR para realizar el pago">
+                    </div>
 
                     <div class="modal-cobranza__acciones">
                         <button type="button" class="btn-cancelar" id="modalCobranzaCancelar">Cancelar</button>
