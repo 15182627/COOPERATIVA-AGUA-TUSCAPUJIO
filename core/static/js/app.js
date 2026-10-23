@@ -63,6 +63,23 @@
         if (texto) titulo.textContent = texto;
     }
 
+    /* ---------- mostrar QR según el método de pago ---------- */
+
+    document.querySelectorAll("[data-qr-method]").forEach(function (select) {
+        var panelQr = select.form
+            ? select.form.querySelector("[data-qr-payment-details]")
+            : null;
+
+        if (!panelQr) return;
+
+        function actualizarQr() {
+            panelQr.hidden = select.value !== "QR";
+        }
+
+        select.addEventListener("change", actualizarQr);
+        actualizarQr();
+    });
+
     /* ---------- modal de cobranza ---------- */
     var modalCobranza = document.getElementById("modalCobranza");
     if (modalCobranza) {
