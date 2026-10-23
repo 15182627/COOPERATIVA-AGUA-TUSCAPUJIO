@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block title %}Detalle de Cobranza - Cooperativa de Agua{% endblock %}
 
@@ -271,6 +272,7 @@
 
                 <select
                     name="metodo_pago"
+                    data-qr-method
                     required
                 >
 
@@ -291,6 +293,11 @@
                     </option>
 
                 </select>
+
+                <div class="qr-pago-panel" data-qr-payment-details hidden>
+                    <p>Escanea este código QR para realizar el pago.</p>
+                    <img src="{% static 'img/qr-pago.png' %}" alt="Código QR para realizar el pago">
+                </div>
 
 
                 <label>
