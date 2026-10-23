@@ -1215,6 +1215,30 @@ body:has(.dashboard) {
     margin-bottom: 18px;
 }
 
+.qr-pago-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 0 auto 18px;
+    padding: 16px;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-md);
+    background: #fff;
+    text-align: center;
+}
+
+.qr-pago-panel[hidden] {
+    display: none;
+}
+
+.qr-pago-panel img {
+    display: block;
+    width: min(100%, 300px);
+    height: auto;
+    border-radius: var(--radio-sm);
+}
+
 .modal-cobranza__acciones {
     display: flex;
     justify-content: flex-end;
