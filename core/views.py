@@ -288,7 +288,7 @@ def inicio(request):
 # =========================================================
 # SOCIOS
 # =========================================================
-@requiere_login
+@requiere_rol([ROL_ADMIN, ROL_CAJERO, ROL_LECTOR])
 @requiere_rol([ROL_ADMIN, ROL_CAJERO])
 def lista_socios(request):
 
@@ -394,7 +394,7 @@ def nuevo_socio(request):
         "core/nuevo_socio.html"
     )
 
-@requiere_login
+@requiere_rol([ROL_ADMIN, ROL_CAJERO, ROL_LECTOR])
 @requiere_rol([ROL_ADMIN, ROL_CAJERO])
 def ver_socio(request, id_socio):
 
@@ -410,7 +410,7 @@ def ver_socio(request, id_socio):
             "socio": socio,
         }
     )
-@requiere_login
+@requiere_rol([ROL_ADMIN])
 @requiere_rol([ROL_ADMIN, ROL_CAJERO])
 def editar_socio(request, id_socio):
 
@@ -1111,7 +1111,7 @@ def lista_consumos(request):
 # DEUDAS
 # =========================================================
 @requiere_login
-@requiere_rol([ROL_ADMIN, ROL_LECTOR])
+@requiere_rol([ROL_ADMIN, ROL_CAJERO])
 def lista_deudas(request):
 
     periodo_id = request.GET.get(
